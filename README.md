@@ -1,5 +1,17 @@
 # AOE Media Server
 
+<style>
+.center {
+    text-align: center;
+}
+</style>
+
+<p class="center">
+  <a href="https://app.codecov.io/gh/aoeai/aoemedia-server/tree/main">
+    <img alt="codecov" src="https://codecov.io/gh/aoeai/aoeai-qigua-android/graph/badge.svg?token=CW4CKIE6FS">
+  </a>
+</p>
+
 基于领域驱动设计「DDD」的多媒体文件存储系统。支持存储各种图片。
 
 ## 项目背景
