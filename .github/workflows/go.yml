@@ -16,6 +16,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set timezone
+      run: sudo timedatectl set-timezone Asia/Shanghai
+
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
