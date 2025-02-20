@@ -1,0 +1,6 @@
+# 存储配置
+[storage]
+# 测试环境临时文件存储目录
+file_dir = "/Users/aoe/temp-prod/files"
+# 图片存储目录
+image_dir = "/Users/aoe/temp-prod/images"

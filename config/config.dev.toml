@@ -1,0 +1,6 @@
+# 存储配置
+[storage]
+# 文件存储目录
+file_dir = "/Users/aoe/aoemedia-server-storage/dev/files"
+# 图片存储目录
+image_dir = "/Users/aoe/aoemedia-server-storage/dev/images"
