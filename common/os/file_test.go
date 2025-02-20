@@ -15,21 +15,21 @@ func TestModTime(t *testing.T) {
 }
 
 func shouldReturnCorrectModTimeForTxt(t *testing.T) {
-	expectedTime := time.Date(2025, 2, 8, 15, 40, 25, 362333437, time.Local)
+	expectedTime := time.Date(2025, 2, 8, 7, 40, 25, 362333437, time.UTC)
 	modTime, err := ModTime(testdataPath(testconst.Txt))
 
 	assertModTime(t, err, expectedTime, modTime)
 }
 
 func shouldReturnCorrectModTimeForWebp(t *testing.T) {
-	expectedTime := time.Date(2025, 1, 25, 19, 02, 28, 133320471, time.Local)
+	expectedTime := time.Date(2025, 1, 25, 11, 02, 28, 133320471, time.UTC)
 	modTime, err := ModTime(testdataPath(testconst.Webp))
 
 	assertModTime(t, err, expectedTime, modTime)
 }
 
 func shouldReturnCorrectModTimeForJpg(t *testing.T) {
-	expectedTime := time.Date(2024, 5, 15, 9, 1, 1, 0, time.Local)
+	expectedTime := time.Date(2024, 5, 15, 1, 1, 1, 0, time.UTC)
 	modTime, err := ModTime(testdataPath(testconst.Jpg))
 
 	assertModTime(t, err, expectedTime, modTime)

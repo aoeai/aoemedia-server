@@ -18,5 +18,5 @@ func ModTime(path string) (modTime time.Time, err error) {
 	if err != nil {
 		return time.Time{}, err
 	}
-	return fileInfo.ModTime(), nil
+	return fileInfo.ModTime().UTC(), nil
 }
