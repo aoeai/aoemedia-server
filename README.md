@@ -1,12 +1,6 @@
 # AOE Media Server
 
-<style>
-.center {
-    text-align: center;
-}
-</style>
-
-<p class="center">
+<p style="text-align: center;">
   <a href="https://app.codecov.io/gh/aoeai/aoemedia-server/tree/main">
     <img alt="codecov" src="https://codecov.io/gh/aoeai/aoeai-qigua-android/graph/badge.svg?token=CW4CKIE6FS">
   </a>
