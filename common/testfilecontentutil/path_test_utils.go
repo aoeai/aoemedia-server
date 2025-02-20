@@ -1,11 +1,11 @@
 package testfilecontentutil
 
 import (
-	aoeos "github.com/aoemedia-server/common/os"
+	"github.com/aoemedia-server/common/testpath"
 	"path/filepath"
 )
 
 func DomainFileModelTestdataPath(filename string) string {
-	projectRoot, _ := aoeos.ProjectRoot()
+	projectRoot, _ := testpath.ProjectRoot()
 	return filepath.Join(projectRoot, "domain", "file", "model", "testdata", filename)
 }

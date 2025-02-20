@@ -1,4 +1,4 @@
-package aoeos
+package testpath
 
 import (
 	"fmt"

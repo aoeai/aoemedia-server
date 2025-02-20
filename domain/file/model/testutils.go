@@ -1,7 +1,7 @@
 package model
 
 import (
-	aoeos "github.com/aoemedia-server/common/os"
+	aoeos "github.com/aoemedia-server/common/testpath"
 	"os"
 	"path/filepath"
 	"testing"
