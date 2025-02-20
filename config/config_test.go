@@ -14,7 +14,7 @@ func shouldGetFileDirSuccessfully(t *testing.T) {
 	config := Instance()
 
 	// 验证RootDirPath返回值
-	expectedPath := "/Users/aoe/temp-test/files"
+	expectedPath := ".temp-test-files"
 	actualPath := config.RootDirPath()
 
 	assert.Equal(t, expectedPath, actualPath, "获取文件存储目录失败")

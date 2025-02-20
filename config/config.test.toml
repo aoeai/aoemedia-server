@@ -1,6 +1,6 @@
 # 存储配置
 [storage]
 # 文件存储目录
-file_dir = "/Users/aoe/temp-test/files"
+file_dir = ".temp-test-files"
 # 图片存储目录
-image_dir = "/Users/aoe/temp-test/images"
+image_dir = "temp-test-images"
