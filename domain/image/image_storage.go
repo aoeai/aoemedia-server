@@ -1,9 +1,8 @@
-package storage
+package image
 
 import (
 	"fmt"
-	"github.com/aoemedia-server/domain/file/storage"
-	imagemodel "github.com/aoemedia-server/domain/image/model"
+	"github.com/aoemedia-server/domain/file"
 	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
@@ -11,12 +10,12 @@ import (
 
 // ImageStorage 图片文件存储器
 type ImageStorage struct {
-	*storage.LocalFileStorage
+	*file.LocalFileStorage
 }
 
 // NewImageStorage 创建图片文件存储器
 func NewImageStorage(fullDirPath string) (*ImageStorage, error) {
-	localStorage, err := storage.NewLocalFileStorage(fullDirPath)
+	localStorage, err := file.NewLocalFileStorage(fullDirPath)
 	if err != nil {
 		return nil, fmt.Errorf("创建本地存储器失败: %w", err)
 	}
@@ -28,7 +27,7 @@ func NewImageStorage(fullDirPath string) (*ImageStorage, error) {
 // 返回值:
 //   - string: 文件存储的完整路径
 //   - error: 存储过程中可能发生的错误
-func (s *ImageStorage) Save(aoeImage *imagemodel.AoeImage, fileName string) (string, error) {
+func (s *ImageStorage) Save(aoeImage *AoeImage, fileName string) (string, error) {
 	// 保存文件
 	relativePath, err := s.LocalFileStorage.Save(aoeImage.FileContent(), fileName)
 	if err != nil {

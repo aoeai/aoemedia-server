@@ -3,17 +3,16 @@ package storage
 import (
 	"fmt"
 	"github.com/aoemedia-server/config"
-	"github.com/aoemedia-server/domain/file/model"
-	"github.com/aoemedia-server/domain/file/storage"
+	"github.com/aoemedia-server/domain/file"
 )
 
 type FileStorage struct {
-	fileContent *model.FileContent
+	fileContent *file.Content
 }
 
-func NewFileStorage(fileContent *model.FileContent) (*FileStorage, error) {
+func NewFileStorage(fileContent *file.Content) (*FileStorage, error) {
 	if fileContent == nil {
-		return nil, fmt.Errorf("FileContent 不能为空")
+		return nil, fmt.Errorf("Content 不能为空")
 	}
 
 	return &FileStorage{fileContent}, nil
@@ -26,7 +25,7 @@ func (s *FileStorage) Save(filename string) (string, error) {
 }
 
 func (s *FileStorage) save(fullDirPath, filename string) (string, error) {
-	localStorage, err := storage.NewLocalFileStorage(fullDirPath)
+	localStorage, err := file.NewLocalFileStorage(fullDirPath)
 	if err != nil {
 		return "", err
 	}

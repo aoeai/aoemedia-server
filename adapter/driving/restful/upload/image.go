@@ -3,8 +3,8 @@ package upload
 import (
 	"github.com/aoemedia-server/adapter/driving/restful/response"
 	"github.com/aoemedia-server/application/storage"
-	"github.com/aoemedia-server/domain/file/model"
-	imagemodel "github.com/aoemedia-server/domain/image/model"
+	"github.com/aoemedia-server/domain/file"
+	imagemodel "github.com/aoemedia-server/domain/image"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -26,7 +26,7 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 		return // 假设readUploadedFile内部已处理错误响应
 	}
 
-	fileContent := model.NewFileContent(content)
+	fileContent := file.NewFileContent(content)
 	aoeImage, err := imagemodel.NewAoeImage(fileContent)
 	if err != nil {
 		response.SendBadRequest(ctx, err.Error())

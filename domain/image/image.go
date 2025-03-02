@@ -1,21 +1,20 @@
-package model
+package image
 
 import (
 	"fmt"
-	"github.com/aoemedia-server/domain/file/model"
-	"github.com/aoemedia-server/domain/image"
+	"github.com/aoemedia-server/domain/file"
 	"github.com/dsoprea/go-exif/v3"
 	"time"
 )
 
 type AoeImage struct {
-	fileContent   *model.FileContent
+	fileContent   *file.Content
 	createTime    time.Time
 	hasCreateTime bool
 }
 
-func NewAoeImage(fc *model.FileContent) (*AoeImage, error) {
-	if isImage := image.IsImage(fc); !isImage {
+func NewAoeImage(fc *file.Content) (*AoeImage, error) {
+	if isImage := IsImage(fc); !isImage {
 		return nil, fmt.Errorf("文件内容不是图片类型")
 	}
 
@@ -35,7 +34,7 @@ func NewAoeImage(fc *model.FileContent) (*AoeImage, error) {
 	return aoeImage, nil
 }
 
-func (ai *AoeImage) FileContent() *model.FileContent {
+func (ai *AoeImage) FileContent() *file.Content {
 	return ai.fileContent
 }
 
@@ -56,13 +55,13 @@ func extractExifCreateTime(imageData []byte) (time.Time, error) {
 	}
 
 	// 解析EXIF数据
-	ifds, _, err := exif.GetFlatExifData(rawExif, nil)
+	exifTags, _, err := exif.GetFlatExifData(rawExif, nil)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("解析EXIF数据失败: %w", err)
 	}
 
 	// 尝试获取创建时间
-	for _, ifd := range ifds {
+	for _, ifd := range exifTags {
 		if ifd.TagName == "DateTime" || ifd.TagName == "DateTimeOriginal" || ifd.TagName == "DateTimeDigitized" {
 			strValue, ok := ifd.Value.(string)
 			if !ok {

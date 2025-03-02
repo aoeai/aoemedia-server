@@ -1,14 +1,11 @@
-package storage
+package file
 
 import (
 	"github.com/aoemedia-server/common/testconst"
-	"github.com/aoemedia-server/common/testfilecontentutil"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/aoemedia-server/domain/file/model"
 )
 
 func TestLocalFileStorage_Store(t *testing.T) {
@@ -65,6 +62,6 @@ func shouldReturnErrorWhenFilenameIsRepeated(t *testing.T) {
 	assert.Contains(t, err.Error(), "文件已经存在", "错误信息应该包含'文件已经存在'")
 }
 
-func newTestFileContent(t *testing.T) *model.FileContent {
-	return testfilecontentutil.NewTestFileContent(t, filepath.Join("..", "model", "testdata", testconst.Txt))
+func newTestFileContent(t *testing.T) *Content {
+	return NewTestFileContent(t, DomainFileTestdataPath(testconst.Txt))
 }

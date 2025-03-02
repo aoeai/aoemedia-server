@@ -1,10 +1,10 @@
 package testcleanutil
 
 import (
-	"github.com/aoemedia-server/domain/file/storage"
+	"github.com/aoemedia-server/domain/file"
 	"testing"
 )
 
 func CleanTestTempDir(t *testing.T, tempDir string) {
-	storage.CleanTestTempDir(t, tempDir)
+	file.CleanTestTempDir(t, tempDir)
 }

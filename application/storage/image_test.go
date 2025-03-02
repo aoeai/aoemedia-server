@@ -2,11 +2,10 @@ package storage
 
 import (
 	"github.com/aoemedia-server/application/storage/path"
-	"github.com/aoemedia-server/common/testcleanutil"
 	"github.com/aoemedia-server/common/testconst"
-	"github.com/aoemedia-server/common/testimageutil"
 	"github.com/aoemedia-server/config"
-	imagemodel "github.com/aoemedia-server/domain/image/model"
+	"github.com/aoemedia-server/domain/file"
+	imagemodel "github.com/aoemedia-server/domain/image"
 	"github.com/stretchr/testify/assert"
 	"path/filepath"
 	"testing"
@@ -24,9 +23,9 @@ func Test_createTimeOf(t *testing.T) {
 
 	tests := []args{
 		{"当图片的Exif中提取创建时间成功时，使用创建时间的「年-月」做文件夹名",
-			testimageutil.NewTestAoeImage(t, testconst.Jpg), filepath.Join("2024-05")},
+			imagemodel.NewTestImage(t, testconst.Jpg), filepath.Join("2024-05")},
 		{"当图片的Exif中提取创建时间失败时，使用当前时间的「年-月」做文件夹名",
-			testimageutil.NewTestAoeImage(t, testconst.Webp), filepath.Join(nowYearMonth)},
+			imagemodel.NewTestImage(t, testconst.Webp), filepath.Join(nowYearMonth)},
 	}
 
 	for _, test := range tests {
@@ -39,7 +38,7 @@ func Test_createTimeOf(t *testing.T) {
 }
 
 func Test_Save(t *testing.T) {
-	defer testcleanutil.CleanTestTempDir(t, config.Instance().FileStorage.ImageDir)
+	defer file.CleanTestTempDir(t, config.Instance().FileStorage.ImageDir)
 
 	type args struct {
 		name         string
@@ -52,10 +51,10 @@ func Test_Save(t *testing.T) {
 
 	tests := []args{
 		{"当图片的Exif中提取创建时间成功时，使用创建时间的「年-月」文件夹存储", testconst.Jpg,
-			testimageutil.NewTestAoeImage(t, testconst.Jpg),
+			imagemodel.NewTestImage(t, testconst.Jpg),
 			filepath.Join(config.Instance().FileStorage.ImageDir, "2024-05", testconst.Jpg)},
 		{"当图片的Exif中提取创建时间失败时，使用当前时间的「年-月」文件夹存储", testconst.Webp,
-			testimageutil.NewTestAoeImage(t, testconst.Webp),
+			imagemodel.NewTestImage(t, testconst.Webp),
 			filepath.Join(config.Instance().FileStorage.ImageDir, nowYearMonth, testconst.Webp)},
 	}
 

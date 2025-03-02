@@ -1,12 +1,10 @@
-package storage
+package file
 
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
-
-	"github.com/aoemedia-server/domain/file/model"
 )
 
 // LocalFileStorage 本地文件存储器
@@ -30,7 +28,7 @@ func NewLocalFileStorage(fullDirPath string) (*LocalFileStorage, error) {
 // 返回值:
 //   - string: 文件存储后相对于存储根目录的相对路径
 //   - error: 存储过程中可能发生的错误，包括：目录创建失败、文件已存在、写入失败等
-func (s *LocalFileStorage) Save(fileContent *model.FileContent, fileName string) (string, error) {
+func (s *LocalFileStorage) Save(fileContent *Content, fileName string) (string, error) {
 	// 确保子目录存在
 	if err := os.MkdirAll(s.fullDirPath, 0755); err != nil {
 		return "", fmt.Errorf("创建文件子目录失败: %w", err)

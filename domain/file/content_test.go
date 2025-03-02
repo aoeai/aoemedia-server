@@ -1,4 +1,4 @@
-package model
+package file
 
 import (
 	"github.com/aoemedia-server/common/testconst"
@@ -40,21 +40,21 @@ func shouldReturnCorrectHashValueForJpgFile(t *testing.T) {
 	assertHashValue(t, fileContent, expectedHash)
 }
 
-func newTestTxtFileContent(t *testing.T) *FileContent {
-	path := DomainFileModelTestdataPath(testconst.Txt)
+func newTestTxtFileContent(t *testing.T) *Content {
+	path := DomainFileTestdataPath(testconst.Txt)
 	return NewTestFileContent(t, path)
 }
 
-func newTestJpgContent(t *testing.T) *FileContent {
-	return NewTestFileContent(t, "testdata/IMG_20240515_085904.jpg")
+func newTestJpgContent(t *testing.T) *Content {
+	return NewTestFileContent(t, DomainFileTestdataPath("IMG_20240515_085904.jpg"))
 }
 
-func assertFileSize(t *testing.T, fileContent *FileContent, expectedSize uint64) {
+func assertFileSize(t *testing.T, fileContent *Content, expectedSize uint64) {
 	got := fileContent.SizeInBytes()
 	assert.Equal(t, expectedSize, got, "文件内容的大小应该是 %v 字节，但实际是 %v 字节", expectedSize, got)
 }
 
-func assertHashValue(t *testing.T, fileContent *FileContent, expectedHash string) {
+func assertHashValue(t *testing.T, fileContent *Content, expectedHash string) {
 	got := fileContent.Hash()
 	assert.Equal(t, expectedHash, got, "文件内容的哈希值应该是 %v，但实际是 %v", expectedHash, got)
 }

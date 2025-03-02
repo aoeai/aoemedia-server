@@ -1,20 +1,20 @@
-package model
+package file
 
 import (
 	"crypto/sha256"
 	"encoding/hex"
 )
 
-// FileContent 文件内容值对象
-type FileContent struct {
+// Content 文件内容值对象
+type Content struct {
 	data        []byte
 	hashValue   string
 	sizeInBytes uint64
 }
 
 // NewFileContent 创建文件内容值对象
-func NewFileContent(data []byte) *FileContent {
-	return &FileContent{
+func NewFileContent(data []byte) *Content {
+	return &Content{
 		data:        data,
 		hashValue:   calculateHash(data),
 		sizeInBytes: uint64(len(data)),
@@ -29,18 +29,18 @@ func calculateHash(data []byte) string {
 }
 
 // SizeInBytes 文件大小
-func (fc *FileContent) SizeInBytes() uint64 {
-	return fc.sizeInBytes
+func (c *Content) SizeInBytes() uint64 {
+	return c.sizeInBytes
 }
 
 // Hash 文件哈希值
-func (fc *FileContent) Hash() string {
-	return fc.hashValue
+func (c *Content) Hash() string {
+	return c.hashValue
 }
 
 // Data 获取文件内容数据
-func (fc *FileContent) Data() []byte {
-	return fc.data
+func (c *Content) Data() []byte {
+	return c.data
 }
 
 // 获取文件的创建时间

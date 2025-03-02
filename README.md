@@ -112,3 +112,9 @@ go build
 ```bash
 env APP_ENV=dev ./aoemedia-server
 ```
+
+## 词汇表
+
+| abbreviation | full name | 中文  |
+|--------------|-----------|-----|
+| -            | metadata  | 元数据 |

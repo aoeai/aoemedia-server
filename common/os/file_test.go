@@ -2,7 +2,8 @@ package aoeos
 
 import (
 	"github.com/aoemedia-server/common/testconst"
-	"github.com/aoemedia-server/common/testfilecontentutil"
+	aoeos "github.com/aoemedia-server/common/testpath"
+	"github.com/aoemedia-server/domain/file"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"path/filepath"
@@ -26,7 +27,7 @@ func SetupTestFileModTime(t *testing.T) {
 }
 
 func setFileModTime(t *testing.T, filename string, modTime time.Time) {
-	filePath := testfilecontentutil.DomainFileModelTestdataPath(filename)
+	filePath := file.DomainFileTestdataPath(filename)
 	err := os.Chtimes(filePath, modTime, modTime)
 	if err != nil {
 		t.Fatalf("设置文件 %s 的修改时间失败: %v", filepath.Base(filePath), err)
@@ -55,7 +56,8 @@ func shouldReturnCorrectModTimeForJpg(t *testing.T) {
 }
 
 func testdataPath(filename string) string {
-	return filepath.Join("..", "..", "domain", "file", "model", "testdata", filename)
+	projectRoot, _ := aoeos.ProjectRoot()
+	return filepath.Join(projectRoot, "domain", "file", "testdata", filename)
 }
 
 func assertModTime(t *testing.T, err error, expectedTime time.Time, modTime time.Time) {

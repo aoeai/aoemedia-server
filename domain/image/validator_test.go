@@ -2,7 +2,7 @@ package image
 
 import (
 	"github.com/aoemedia-server/common/testconst"
-	"github.com/aoemedia-server/common/testfilecontentutil"
+	"github.com/aoemedia-server/domain/file"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -31,11 +31,11 @@ func shouldReturnTrueWhenFileIsWebp(t *testing.T) {
 }
 
 func testdataPath(filename string) string {
-	return testfilecontentutil.DomainFileModelTestdataPath(filename)
+	return file.DomainFileTestdataPath(filename)
 }
 
 func assertIsImage(t *testing.T, filePath string, expected bool) {
-	fileContent := testfilecontentutil.NewTestFileContent(t, filePath)
+	fileContent := file.NewTestFileContent(t, filePath)
 	got := IsImage(fileContent)
 
 	assert.Equal(t, expected, got)

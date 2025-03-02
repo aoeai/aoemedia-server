@@ -4,17 +4,16 @@ import (
 	"fmt"
 	"github.com/aoemedia-server/application/storage/path"
 	"github.com/aoemedia-server/config"
-	"github.com/aoemedia-server/domain/image/model"
-	imagestorage "github.com/aoemedia-server/domain/image/storage"
+	"github.com/aoemedia-server/domain/image"
 	"path/filepath"
 	"time"
 )
 
 type ImageStorage struct {
-	image *model.AoeImage
+	image *image.AoeImage
 }
 
-func NewImageStorage(image *model.AoeImage) (*ImageStorage, error) {
+func NewImageStorage(image *image.AoeImage) (*ImageStorage, error) {
 	if image == nil {
 		return nil, fmt.Errorf("image 不能为空")
 	}
@@ -32,7 +31,7 @@ func (s *ImageStorage) Save(fileName string) (string, error) {
 	return s.save(fullDirPath, fileName)
 }
 
-func createTimeOf(image *model.AoeImage) string {
+func createTimeOf(image *image.AoeImage) string {
 	if image.HasCreateTime() {
 		return path.YearMonthOf(image.CreateTime())
 	}
@@ -42,7 +41,7 @@ func createTimeOf(image *model.AoeImage) string {
 
 func (s *ImageStorage) save(fullDirPath, fileName string) (string, error) {
 	// 创建图片存储器
-	imageStorage, err := imagestorage.NewImageStorage(fullDirPath)
+	imageStorage, err := image.NewImageStorage(fullDirPath)
 	if err != nil {
 		return "", fmt.Errorf("创建图片存储器失败: %w", err)
 	}
