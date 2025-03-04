@@ -26,9 +26,15 @@ jobs:
         mysql database: 'media'
         mysql root password: 'root123456'
 
+    - name: Wait for MySQL to be ready
+      run: |
+        while ! mysqladmin ping -h127.0.0.1 -P3306 -uroot -proot123456 --silent; do
+          sleep 1
+        done
+
     - name: Create database tables
       run: |
-        mysql -h127.0.0.1 -uroot -proot123456 media < docs/sql/create_tables.sql
+        mysql --defaults-extra-file=<(echo -e "[client]\nhost=127.0.0.1\nuser=root\npassword=root123456\n") media < docs/sql/create_tables.sql
 
     - name: Set up Go
       uses: actions/setup-go@v4
