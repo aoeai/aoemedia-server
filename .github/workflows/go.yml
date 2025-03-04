@@ -19,6 +19,17 @@ jobs:
     - name: Set timezone
       run: sudo timedatectl set-timezone Asia/Shanghai
 
+    - name: Set up MySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql version: '8.0'
+        mysql database: 'media'
+        mysql root password: 'root123456'
+
+    - name: Create database tables
+      run: |
+        mysql -h127.0.0.1 -uroot -proot123456 media < docs/sql/create_tables.sql
+
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
