@@ -29,8 +29,8 @@ func calculateHash(data []byte) string {
 }
 
 // SizeInBytes 文件大小
-func (c *Content) SizeInBytes() uint64 {
-	return c.sizeInBytes
+func (c *Content) SizeInBytes() int64 {
+	return int64(c.sizeInBytes)
 }
 
 // Hash 文件哈希值

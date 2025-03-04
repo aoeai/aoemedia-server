@@ -3,6 +3,8 @@ package upload
 import (
 	"bytes"
 	"encoding/json"
+	filerepo "github.com/aoemedia-server/adapter/driven/persistence/file"
+	"github.com/aoemedia-server/common/converter"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -81,9 +83,7 @@ func closeTestFile(t *testing.T, file *os.File) {
 	}
 }
 
-func assertSuccess(t *testing.T, testFilePath, expectedFilename, expectedHash, url string, expectedSize float64) {
-	code, response := postFile(t, testFilePath, url)
-
+func assertSuccess(t *testing.T, code int, response map[string]interface{}, expectedFilename, expectedHash string, expectedSize float64) {
 	// 验证响应状态码
 	assert.Equal(t, http.StatusOK, code)
 
@@ -102,4 +102,9 @@ func assertBadRequest(t *testing.T, testFilePath, expectedErrorMsg, url string) 
 
 	// 验证响应字段
 	assert.Equal(t, expectedErrorMsg, response["error"])
+}
+
+func deleteImageFileByDB(response map[string]interface{}) {
+	id, _ := converter.StringToInt64(response["id"].(string))
+	filerepo.DeleteTestFile(id)
 }

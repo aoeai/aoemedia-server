@@ -5,14 +5,14 @@ import (
 	"testing"
 )
 
-func NewTestImage(t *testing.T, filename string) *AoeImage {
+func NewTestImage(t *testing.T, filename string) *DomainImage {
 	fileContent := newTestFileContent(t, filename)
 	return newTestImage(fileContent)
 }
 
-func newTestImage(fileContent *file.Content) *AoeImage {
-	aoeImage, _ := NewAoeImage(fileContent)
-	return aoeImage
+func newTestImage(fileContent *file.Content) *DomainImage {
+	domainImage, _ := NewDomainImage(fileContent)
+	return domainImage
 }
 
 func newTestFileContent(t *testing.T, filename string) *file.Content {

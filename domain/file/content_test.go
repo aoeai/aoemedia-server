@@ -13,12 +13,12 @@ func TestFileContent_SizeInBytes(t *testing.T) {
 
 func shouldReturnCorrectBytesSizeForTextFile(t *testing.T) {
 	fileContent := newTestTxtFileContent(t)
-	assertFileSize(t, fileContent, uint64(12))
+	assertFileSize(t, fileContent, int64(12))
 }
 
 func shouldReturnCorrectBytesSizeForJpgFile(t *testing.T) {
 	fileContent := newTestJpgContent(t)
-	assertFileSize(t, fileContent, uint64(2835185))
+	assertFileSize(t, fileContent, int64(2835185))
 }
 
 func TestFileContent_Hash(t *testing.T) {
@@ -49,7 +49,7 @@ func newTestJpgContent(t *testing.T) *Content {
 	return NewTestFileContent(t, DomainFileTestdataPath("IMG_20240515_085904.jpg"))
 }
 
-func assertFileSize(t *testing.T, fileContent *Content, expectedSize uint64) {
+func assertFileSize(t *testing.T, fileContent *Content, expectedSize int64) {
 	got := fileContent.SizeInBytes()
 	assert.Equal(t, expectedSize, got, "文件内容的大小应该是 %v 字节，但实际是 %v 字节", expectedSize, got)
 }

@@ -1,5 +1,5 @@
 package file
 
 type Repository interface {
-	Save(file *File) *File
+	Save(file *DomainFile) (int64, error)
 }

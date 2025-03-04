@@ -1,7 +1,8 @@
-package storage
+package image
 
 import (
-	"github.com/aoemedia-server/application/storage/path"
+	"github.com/aoemedia-server/adapter/driven/persistence/db"
+	filerepo "github.com/aoemedia-server/adapter/driven/persistence/file"
 	"github.com/aoemedia-server/common/testconst"
 	"github.com/aoemedia-server/config"
 	"github.com/aoemedia-server/domain/file"
@@ -15,11 +16,11 @@ import (
 func Test_createTimeOf(t *testing.T) {
 	type args struct {
 		name               string
-		image              *imagemodel.AoeImage
+		image              *imagemodel.DomainImage
 		expectedPathSuffix string
 	}
 
-	nowYearMonth := path.YearMonthOf(time.Now())
+	nowYearMonth := YearMonthOf(time.Now())
 
 	tests := []args{
 		{"当图片的Exif中提取创建时间成功时，使用创建时间的「年-月」做文件夹名",
@@ -38,32 +39,37 @@ func Test_createTimeOf(t *testing.T) {
 }
 
 func Test_Save(t *testing.T) {
-	defer file.CleanTestTempDir(t, config.Instance().FileStorage.ImageDir)
+	db.InitTestDB()
+	defer file.CleanTestTempDir(t, config.Inst().FileStorage.ImageDir)
 
 	type args struct {
 		name         string
 		filename     string
-		image        *imagemodel.AoeImage
+		image        *imagemodel.DomainImage
 		expectedPath string
 	}
 
-	nowYearMonth := path.YearMonthOf(time.Now())
+	nowYearMonth := YearMonthOf(time.Now())
 
 	tests := []args{
 		{"当图片的Exif中提取创建时间成功时，使用创建时间的「年-月」文件夹存储", testconst.Jpg,
 			imagemodel.NewTestImage(t, testconst.Jpg),
-			filepath.Join(config.Instance().FileStorage.ImageDir, "2024-05", testconst.Jpg)},
+			filepath.Join(config.Inst().FileStorage.ImageDir, "2024-05", testconst.Jpg)},
 		{"当图片的Exif中提取创建时间失败时，使用当前时间的「年-月」文件夹存储", testconst.Webp,
 			imagemodel.NewTestImage(t, testconst.Webp),
-			filepath.Join(config.Instance().FileStorage.ImageDir, nowYearMonth, testconst.Webp)},
+			filepath.Join(config.Inst().FileStorage.ImageDir, nowYearMonth, testconst.Webp)},
 	}
 
 	for _, test := range tests {
+		var id int64
 		t.Run(test.name, func(t *testing.T) {
-			imageStorage, _ := NewImageStorage(test.image)
-			fullPath, _ := imageStorage.Save(test.filename)
+			storage, _ := NewImageStorage(test.image, filerepo.NewRepository())
+			imageId, fullPath, _ := storage.Save(test.filename)
+			id = imageId
 
 			assert.Equal(t, test.expectedPath, fullPath)
 		})
+
+		t.Cleanup(func() { filerepo.DeleteTestFile(id) })
 	}
 }

@@ -7,42 +7,42 @@ import (
 	"time"
 )
 
-type AoeImage struct {
+type DomainImage struct {
 	fileContent   *file.Content
 	createTime    time.Time
 	hasCreateTime bool
 }
 
-func NewAoeImage(fc *file.Content) (*AoeImage, error) {
+func NewDomainImage(fc *file.Content) (*DomainImage, error) {
 	if isImage := IsImage(fc); !isImage {
 		return nil, fmt.Errorf("文件内容不是图片类型")
 	}
 
-	aoeImage := &AoeImage{fileContent: fc, hasCreateTime: false}
+	domainImage := &DomainImage{fileContent: fc, hasCreateTime: false}
 
 	// 从EXIF中获取创建时间
 	createTime, err := extractExifCreateTime(fc.Data())
 	if err != nil {
-		return aoeImage, nil
+		return domainImage, nil
 	}
 	if createTime.IsZero() {
-		return aoeImage, nil
+		return domainImage, nil
 	}
-	aoeImage.hasCreateTime = true
-	aoeImage.createTime = createTime
+	domainImage.hasCreateTime = true
+	domainImage.createTime = createTime
 
-	return aoeImage, nil
+	return domainImage, nil
 }
 
-func (ai *AoeImage) FileContent() *file.Content {
+func (ai *DomainImage) FileContent() *file.Content {
 	return ai.fileContent
 }
 
-func (ai *AoeImage) CreateTime() time.Time {
+func (ai *DomainImage) CreateTime() time.Time {
 	return ai.createTime
 }
 
-func (ai *AoeImage) HasCreateTime() bool {
+func (ai *DomainImage) HasCreateTime() bool {
 	return ai.hasCreateTime
 }
 

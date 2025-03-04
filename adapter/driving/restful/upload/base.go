@@ -2,6 +2,7 @@ package upload
 
 import (
 	"github.com/aoemedia-server/adapter/driving/restful/response"
+	"github.com/aoemedia-server/common/converter"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
 )
@@ -35,9 +36,10 @@ func (c *BaseController) readUploadedFile(ctx *gin.Context) ([]byte, string, err
 }
 
 // sendSuccessResponse 发送成功响应
-func (c *BaseController) sendSuccessResponse(ctx *gin.Context, filename string, size uint64, hash string) {
+func (c *BaseController) sendSuccessResponse(ctx *gin.Context, id int64, filename string, size int64, hash string) {
 	response.SendSuccess(ctx, gin.H{
 		"message":  "文件上传成功",
+		"id":       converter.Int64ToString(id),
 		"filename": filename,
 		"size":     size,
 		"hash":     hash,

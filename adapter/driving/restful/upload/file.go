@@ -2,7 +2,7 @@ package upload
 
 import (
 	"github.com/aoemedia-server/adapter/driving/restful/response"
-	"github.com/aoemedia-server/application/storage"
+	"github.com/aoemedia-server/application/image"
 	"github.com/aoemedia-server/domain/file"
 	"github.com/gin-gonic/gin"
 )
@@ -25,7 +25,7 @@ func (c *FileController) Upload(ctx *gin.Context) {
 	}
 
 	fileContent := file.NewFileContent(content)
-	service, err := storage.NewFileStorage(fileContent)
+	service, err := image.NewFileStorage(fileContent)
 	if err != nil {
 		response.SendInternalServerError(ctx, "创建文件存储服务失败")
 		return
@@ -37,5 +37,5 @@ func (c *FileController) Upload(ctx *gin.Context) {
 		return
 	}
 
-	c.sendSuccessResponse(ctx, originalFileName, fileContent.SizeInBytes(), fileContent.Hash())
+	c.sendSuccessResponse(ctx, 0, originalFileName, fileContent.SizeInBytes(), fileContent.Hash())
 }

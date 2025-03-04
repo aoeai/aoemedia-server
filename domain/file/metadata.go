@@ -7,7 +7,7 @@ type Metadata struct {
 	// 存储路径
 	storagePath string
 	// 来源
-	source int
+	source uint8
 	// 修改时间
 	modifiedTime time.Time
 }
@@ -20,7 +20,7 @@ func (m *Metadata) StoragePath() string {
 	return m.storagePath
 }
 
-func (m *Metadata) Source() int {
+func (m *Metadata) Source() uint8 {
 	return m.source
 }
 

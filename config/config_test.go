@@ -11,7 +11,7 @@ func TestConfig_RootDirPath(t *testing.T) {
 
 func shouldGetFileDirSuccessfully(t *testing.T) {
 	// 获取全局配置实例
-	config := Instance()
+	config := Inst()
 
 	// 验证RootDirPath返回值
 	expectedPath := ".temp-test-files"

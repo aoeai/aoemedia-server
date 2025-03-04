@@ -15,14 +15,14 @@ func TestImageStorage_Save(t *testing.T) {
 
 // 当从 EXIF 中获取创建时间成功时，文件的修改时间会被设置为 EXIF 中的创建时间
 func shouldSetFileModificationTimeToExifCreateTimeWhenExtractExifCreateTimeSuccessfully(t *testing.T) {
-	dir := config.Instance().FileStorage.ImageDir
+	dir := config.Inst().FileStorage.ImageDir
 	defer file.CleanTestTempDir(t, dir)
 
 	filename := testconst.Jpg
-	aoeImage := NewTestImage(t, filename)
+	domainImage := NewTestImage(t, filename)
 
 	imageStorage, _ := NewImageStorage(dir)
-	fullPath, err := imageStorage.Save(aoeImage, filename)
+	fullPath, err := imageStorage.Save(domainImage, filename)
 
 	assert.NoError(t, err)
 

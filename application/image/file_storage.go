@@ -1,4 +1,4 @@
-package storage
+package image
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ func NewFileStorage(fileContent *file.Content) (*FileStorage, error) {
 }
 
 func (s *FileStorage) Save(filename string) (string, error) {
-	fullDirPath := config.Instance().RootDirPath()
+	fullDirPath := config.Inst().RootDirPath()
 
 	return s.save(fullDirPath, filename)
 }

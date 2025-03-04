@@ -4,3 +4,16 @@
 file_dir = "/Users/aoe/aoemedia-server-storage/dev/files"
 # 图片存储目录
 image_dir = "/Users/aoe/aoemedia-server-storage/dev/images"
+
+# 数据库配置
+[database]
+driver = "mysql"
+host = "localhost"
+port = 3306
+username = "root"
+password = "root123456"
+dbname = "media"
+charset = "utf8mb4"
+max_idle_conns = 10
+max_open_conns = 100
+conn_max_lifetime = "1h"

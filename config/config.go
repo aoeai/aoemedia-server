@@ -13,11 +13,26 @@ import (
 type Config struct {
 	// FileStorage 文件存储相关配置
 	FileStorage FileStorageConfig `toml:"storage"`
+	// Database 数据库相关配置
+	Database DatabaseConfig `toml:"database"`
 }
 
 type FileStorageConfig struct {
 	FileDir  string `toml:"file_dir"`
 	ImageDir string `toml:"image_dir"`
+}
+
+type DatabaseConfig struct {
+	Driver          string `toml:"driver"`
+	Host            string `toml:"host"`
+	Port            int    `toml:"port"`
+	Username        string `toml:"username"`
+	Password        string `toml:"password"`
+	DBName          string `toml:"dbname"`
+	Charset         string `toml:"charset"`
+	MaxIdleConns    int    `toml:"max_idle_conns"`
+	MaxOpenConns    int    `toml:"max_open_conns"`
+	ConnMaxLifetime string `toml:"conn_max_lifetime"`
 }
 
 var (
@@ -26,8 +41,8 @@ var (
 	once         sync.Once
 )
 
-// Instance 获取全局配置，使用sync.Once确保配置只加载一次
-func Instance() *Config {
+// Inst 获取全局配置，使用sync.Once确保配置只加载一次
+func Inst() *Config {
 	once.Do(func() {
 		globalConfig, initError = loadConfig()
 		if initError == nil {

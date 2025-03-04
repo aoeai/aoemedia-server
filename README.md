@@ -115,6 +115,9 @@ env APP_ENV=dev ./aoemedia-server
 
 ## 词汇表
 
-| abbreviation | full name | 中文  |
-|--------------|-----------|-----|
-| -            | metadata  | 元数据 |
+| abbreviation | full name   | 中文  |
+|--------------|-------------|-----|
+| -            | metadata    | 元数据 |
+| inst         | instance    | 实例  |
+| repo         | repository  | 仓库  |
+| -            | persistence | 持久化 |

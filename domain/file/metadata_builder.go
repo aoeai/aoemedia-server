@@ -22,7 +22,7 @@ func (b *MetadataBuilder) StoragePath(storagePath string) *MetadataBuilder {
 	return b
 }
 
-func (b *MetadataBuilder) Source(source int) *MetadataBuilder {
+func (b *MetadataBuilder) Source(source uint8) *MetadataBuilder {
 	b.metadata.source = source
 	return b
 }
