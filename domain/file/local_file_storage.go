@@ -43,7 +43,7 @@ func (s *LocalFileStorage) Save(fileContent *Content, fileName string) (string, 
 	}
 
 	// 将文件内容写入到目标路径
-	if err := os.WriteFile(fullFilePath, fileContent.Data(), 0644); err != nil {
+	if err := os.WriteFile(fullFilePath, fileContent.Data, 0644); err != nil {
 		return "", fmt.Errorf("写入文件失败: %w", err)
 	}
 

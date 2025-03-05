@@ -2,9 +2,11 @@ package upload
 
 import (
 	"github.com/aoemedia-server/adapter/driving/restful/response"
-	"github.com/aoemedia-server/application/image"
+	file2 "github.com/aoemedia-server/application/file"
+	"github.com/aoemedia-server/config"
 	"github.com/aoemedia-server/domain/file"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 // FileController 文件上传控制器
@@ -25,17 +27,18 @@ func (c *FileController) Upload(ctx *gin.Context) {
 	}
 
 	fileContent := file.NewFileContent(content)
-	service, err := image.NewFileStorage(fileContent)
-	if err != nil {
-		response.SendInternalServerError(ctx, "创建文件存储服务失败")
-		return
-	}
+	metadata := file.NewMetadataBuilder().FileName(originalFileName).
+		StorageDir(config.Inst().StorageFileRootDir()).Source(1).
+		ModifiedTime(time.Now()).Build()
+	domainFile, err := file.NewDomainFile(fileContent, metadata)
 
-	_, saveErr := service.Save(originalFileName)
+	storage := file2.NewFileStorage()
+
+	_, saveErr := storage.SaveFile(domainFile)
 	if saveErr != nil {
 		response.SendInternalServerError(ctx, saveErr.Error())
 		return
 	}
 
-	c.sendSuccessResponse(ctx, 0, originalFileName, fileContent.SizeInBytes(), fileContent.Hash())
+	c.sendSuccessResponse(ctx, 0, originalFileName, fileContent.SizeInBytes, fileContent.HashValue)
 }

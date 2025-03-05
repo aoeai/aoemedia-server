@@ -15,9 +15,9 @@ func TestContent_validate(t *testing.T) {
 		{
 			name: "所有字段都有效时，验证通过",
 			subject: &Content{
-				data:        []byte("test data"),
-				hashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
-				sizeInBytes: 9,
+				Data:        []byte("test Data"),
+				HashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
+				SizeInBytes: 9,
 			},
 			wantErr: "",
 		},
@@ -29,27 +29,27 @@ func TestContent_validate(t *testing.T) {
 		{
 			name: "文件大小为0时，返回错误：文件内容大小必须大于0",
 			subject: &Content{
-				data:        []byte{},
-				hashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
-				sizeInBytes: 0,
+				Data:        []byte{},
+				HashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
+				SizeInBytes: 0,
 			},
 			wantErr: "文件内容大小必须大于0",
 		},
 		{
 			name: "哈希值为空时，返回错误：文件内容哈希值不能为空",
 			subject: &Content{
-				data:        []byte("test data"),
-				hashValue:   "",
-				sizeInBytes: 9,
+				Data:        []byte("test Data"),
+				HashValue:   "",
+				SizeInBytes: 9,
 			},
 			wantErr: "文件内容哈希值不能为空",
 		},
 		{
 			name: "哈希值长度不是64时，返回错误：文件内容哈希值长度必须是64",
 			subject: &Content{
-				data:        []byte("test data"),
-				hashValue:   "123456",
-				sizeInBytes: 9,
+				Data:        []byte("test Data"),
+				HashValue:   "123456",
+				SizeInBytes: 9,
 			},
 			wantErr: "文件内容哈希值长度必须是64",
 		},
@@ -67,10 +67,10 @@ func TestMetadata_validate(t *testing.T) {
 		{
 			name: "所有字段都有效时，验证通过",
 			subject: &Metadata{
-				fileName:     "test.jpg",
-				storagePath:  "/path/to/storage",
-				source:       1,
-				modifiedTime: time.Now(),
+				FileName:     "test.jpg",
+				StorageDir:   "/path/to/storage",
+				Source:       1,
+				ModifiedTime: time.Now(),
 			},
 			wantErr: "",
 		},
@@ -82,50 +82,50 @@ func TestMetadata_validate(t *testing.T) {
 		{
 			name: "文件名为空时，返回错误：文件名不能为空",
 			subject: &Metadata{
-				fileName:     "",
-				storagePath:  "/path/to/storage",
-				source:       1,
-				modifiedTime: time.Now(),
+				FileName:     "",
+				StorageDir:   "/path/to/storage",
+				Source:       1,
+				ModifiedTime: time.Now(),
 			},
 			wantErr: "文件名不能为空",
 		},
 		{
 			name: "存储路径为空时，返回错误：存储路径不能为空",
 			subject: &Metadata{
-				fileName:     "test.jpg",
-				storagePath:  "",
-				source:       1,
-				modifiedTime: time.Now(),
+				FileName:     "test.jpg",
+				StorageDir:   "",
+				Source:       1,
+				ModifiedTime: time.Now(),
 			},
 			wantErr: "存储路径不能为空",
 		},
 		{
 			name: "来源为0时，返回错误：文件来源不能为空",
 			subject: &Metadata{
-				fileName:     "test.jpg",
-				storagePath:  "/path/to/storage",
-				source:       0,
-				modifiedTime: time.Now(),
+				FileName:     "test.jpg",
+				StorageDir:   "/path/to/storage",
+				Source:       0,
+				ModifiedTime: time.Now(),
 			},
 			wantErr: "文件来源不能为空",
 		},
 		{
 			name: "来源无效时，返回错误：文件来源无效",
 			subject: &Metadata{
-				fileName:     "test.jpg",
-				storagePath:  "/path/to/storage",
-				source:       3,
-				modifiedTime: time.Now(),
+				FileName:     "test.jpg",
+				StorageDir:   "/path/to/storage",
+				Source:       3,
+				ModifiedTime: time.Now(),
 			},
 			wantErr: "文件来源无效",
 		},
 		{
 			name: "修改时间为零值时，返回错误：文件修改时间不能为空",
 			subject: &Metadata{
-				fileName:     "test.jpg",
-				storagePath:  "/path/to/storage",
-				source:       1,
-				modifiedTime: time.Time{},
+				FileName:     "test.jpg",
+				StorageDir:   "/path/to/storage",
+				Source:       1,
+				ModifiedTime: time.Time{},
 			},
 			wantErr: "文件修改时间不能为空",
 		},
@@ -143,16 +143,16 @@ func TestFile_validate(t *testing.T) {
 		{
 			name: "所有字段都有效时，验证通过",
 			subject: &DomainFile{
-				content: &Content{
-					data:        []byte("test data"),
-					hashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
-					sizeInBytes: 9,
+				Content: &Content{
+					Data:        []byte("test Data"),
+					HashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
+					SizeInBytes: 9,
 				},
-				metadata: &Metadata{
-					fileName:     "test.jpg",
-					storagePath:  "/path/to/storage",
-					source:       1,
-					modifiedTime: time.Now(),
+				Metadata: &Metadata{
+					FileName:     "test.jpg",
+					StorageDir:   "/path/to/storage",
+					Source:       1,
+					ModifiedTime: time.Now(),
 				},
 			},
 			wantErr: "",
@@ -160,16 +160,16 @@ func TestFile_validate(t *testing.T) {
 		{
 			name: "文件内容无效时，返回错误",
 			subject: &DomainFile{
-				content: &Content{
-					data:        []byte{},
-					hashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
-					sizeInBytes: 0,
+				Content: &Content{
+					Data:        []byte{},
+					HashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
+					SizeInBytes: 0,
 				},
-				metadata: &Metadata{
-					fileName:     "test.jpg",
-					storagePath:  "/path/to/storage",
-					source:       1,
-					modifiedTime: time.Now(),
+				Metadata: &Metadata{
+					FileName:     "test.jpg",
+					StorageDir:   "/path/to/storage",
+					Source:       1,
+					ModifiedTime: time.Now(),
 				},
 			},
 			wantErr: "文件内容大小必须大于0",
@@ -177,16 +177,16 @@ func TestFile_validate(t *testing.T) {
 		{
 			name: "文件元数据无效时，返回错误",
 			subject: &DomainFile{
-				content: &Content{
-					data:        []byte("test data"),
-					hashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
-					sizeInBytes: 9,
+				Content: &Content{
+					Data:        []byte("test Data"),
+					HashValue:   "1234567890123456789012345678901234567890123456789012345678901234",
+					SizeInBytes: 9,
 				},
-				metadata: &Metadata{
-					fileName:     "",
-					storagePath:  "/path/to/storage",
-					source:       1,
-					modifiedTime: time.Now(),
+				Metadata: &Metadata{
+					FileName:     "",
+					StorageDir:   "/path/to/storage",
+					Source:       1,
+					ModifiedTime: time.Now(),
 				},
 			},
 			wantErr: "文件名不能为空",

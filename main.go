@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/aoemedia-server/adapter/driven/persistence/db"
+	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
 	"github.com/aoemedia-server/adapter/driving/restful/upload"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"

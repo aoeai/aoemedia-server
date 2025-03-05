@@ -5,13 +5,13 @@ import (
 	"github.com/h2non/filetype"
 )
 
-// IsImage 判断文件内容是否为图片类型
-func IsImage(content *file.Content) bool {
+// isImage 判断文件内容是否为图片类型
+func isImage(content *file.Content) bool {
 	if content == nil {
 		return false
 	}
 
-	data := content.Data()
+	data := content.Data
 	if len(data) < 4 { // 至少需要4个字节才能判断
 		return false
 	}

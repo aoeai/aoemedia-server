@@ -3,7 +3,7 @@ package upload
 import (
 	"bytes"
 	"encoding/json"
-	filerepo "github.com/aoemedia-server/adapter/driven/persistence/file"
+	filerepo "github.com/aoemedia-server/adapter/driven/persistence/mysql/file"
 	"github.com/aoemedia-server/common/converter"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"

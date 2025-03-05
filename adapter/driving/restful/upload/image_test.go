@@ -1,7 +1,7 @@
 package upload
 
 import (
-	"github.com/aoemedia-server/adapter/driven/persistence/db"
+	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
 	"github.com/aoemedia-server/common/testconst"
 	"github.com/aoemedia-server/config"
 	"github.com/aoemedia-server/domain/file"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestImageController_Upload(t *testing.T) {
-	file.CleanTestTempDir(t, config.Inst().FileStorage.ImageDir)
+	file.CleanTestTempDir(t, config.Inst().Storage.ImageRootDir)
 	db.InitTestDB()
 
 	t.Run("上传Txt文件会返回错误信息：文件内容不是图片类型", func(t *testing.T) {
@@ -39,5 +39,5 @@ func TestImageController_Upload(t *testing.T) {
 		deleteImageFileByDB(response)
 	})
 
-	t.Cleanup(func() { file.CleanTestTempDir(t, config.Inst().FileStorage.ImageDir) })
+	t.Cleanup(func() { file.CleanTestTempDir(t, config.Inst().Storage.ImageRootDir) })
 }

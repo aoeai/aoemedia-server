@@ -1,9 +1,9 @@
 # 存储配置
 [storage]
-# 文件存储目录
-file_dir = "/Users/aoe/aoemedia-server-storage/dev/files"
-# 图片存储目录
-image_dir = "/Users/aoe/aoemedia-server-storage/dev/images"
+# 文件根目录
+file_root_dir = "/Users/aoe/aoemedia-server-storage/dev/files"
+# 图片根目录
+image_root_dir = "/Users/aoe/aoemedia-server-storage/dev/images"
 
 # 数据库配置
 [database]

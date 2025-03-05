@@ -32,7 +32,7 @@ func NewImageStorage(image *image.DomainImage, repository file.Repository) (*Sto
 //   - string: 文件存储的完整路径
 //   - error: 存储过程中可能发生的错误
 func (s *Storage) Save(fileName string) (int64, string, error) {
-	fullDirPath := filepath.Join(config.Inst().FileStorage.ImageDir, createTimeOf(s.image))
+	fullDirPath := filepath.Join(config.Inst().Storage.ImageRootDir, createTimeOf(s.image))
 
 	fullPath, err := s.save(fullDirPath, fileName)
 	if err != nil {
@@ -50,11 +50,7 @@ func (s *Storage) Save(fileName string) (int64, string, error) {
 }
 
 func createTimeOf(image *image.DomainImage) string {
-	if image.HasCreateTime() {
-		return YearMonthOf(image.CreateTime())
-	}
-
-	return YearMonthOf(time.Now())
+	return YearMonthOf(image.CreateTime())
 }
 
 func (s *Storage) save(fullDirPath, fileName string) (string, error) {
@@ -73,7 +69,7 @@ func newDomainFile(fileName string, s *Storage, fullPath string) (*file.DomainFi
 	if createTime.IsZero() {
 		createTime = time.Now()
 	}
-	metadata := file.NewMetadataBuilder().Source(1).FileName(fileName).StoragePath(fullPath).
+	metadata := file.NewMetadataBuilder().Source(1).FileName(fileName).StorageDir(fullPath).
 		ModifiedTime(createTime).Build()
 	imageFile, err := file.NewDomainFile(s.image.FileContent(), metadata)
 	return imageFile, err

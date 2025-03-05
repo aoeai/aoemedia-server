@@ -11,15 +11,15 @@ import (
 )
 
 type Config struct {
-	// FileStorage 文件存储相关配置
-	FileStorage FileStorageConfig `toml:"storage"`
+	// Storage 文件存储相关配置
+	Storage StorageConfig `toml:"storage"`
 	// Database 数据库相关配置
 	Database DatabaseConfig `toml:"database"`
 }
 
-type FileStorageConfig struct {
-	FileDir  string `toml:"file_dir"`
-	ImageDir string `toml:"image_dir"`
+type StorageConfig struct {
+	FileRootDir  string `toml:"file_root_dir"`
+	ImageRootDir string `toml:"image_root_dir"`
 }
 
 type DatabaseConfig struct {
@@ -56,8 +56,8 @@ func Inst() *Config {
 	return globalConfig
 }
 
-func (c *Config) RootDirPath() string {
-	return c.FileStorage.FileDir
+func (c *Config) StorageFileRootDir() string {
+	return c.Storage.FileRootDir
 }
 
 func configFileName() string {

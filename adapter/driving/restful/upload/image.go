@@ -2,7 +2,7 @@ package upload
 
 import (
 	"fmt"
-	filerepo "github.com/aoemedia-server/adapter/driven/persistence/file"
+	filerepo "github.com/aoemedia-server/adapter/driven/repository/file"
 	"github.com/aoemedia-server/adapter/driving/restful/response"
 	"github.com/aoemedia-server/application/image"
 	"github.com/aoemedia-server/domain/file"
@@ -59,7 +59,7 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 	}
 	logrus.Infof("图片保存成功: %s", save)
 
-	c.sendSuccessResponse(ctx, id, originalFileName, fileContent.SizeInBytes(), fileContent.Hash())
+	c.sendSuccessResponse(ctx, id, originalFileName, fileContent.SizeInBytes, fileContent.HashValue)
 }
 
 // parseSource 从请求中解析source参数

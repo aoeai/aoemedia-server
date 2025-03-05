@@ -13,22 +13,22 @@ func NewMetadataBuilder() *MetadataBuilder {
 }
 
 func (b *MetadataBuilder) FileName(fileName string) *MetadataBuilder {
-	b.metadata.fileName = fileName
+	b.metadata.FileName = fileName
 	return b
 }
 
-func (b *MetadataBuilder) StoragePath(storagePath string) *MetadataBuilder {
-	b.metadata.storagePath = storagePath
+func (b *MetadataBuilder) StorageDir(storageDir string) *MetadataBuilder {
+	b.metadata.StorageDir = storageDir
 	return b
 }
 
 func (b *MetadataBuilder) Source(source uint8) *MetadataBuilder {
-	b.metadata.source = source
+	b.metadata.Source = source
 	return b
 }
 
 func (b *MetadataBuilder) ModifiedTime(modifiedTime time.Time) *MetadataBuilder {
-	b.metadata.modifiedTime = modifiedTime
+	b.metadata.ModifiedTime = modifiedTime
 	return b
 }
 

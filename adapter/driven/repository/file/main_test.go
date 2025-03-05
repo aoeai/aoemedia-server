@@ -1,7 +1,7 @@
 package file
 
 import (
-	"github.com/aoemedia-server/adapter/driven/persistence/db"
+	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
 	"os"
 	"testing"
 )

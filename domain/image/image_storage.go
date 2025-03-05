@@ -37,11 +37,6 @@ func (s *Storage) Save(domainImage *DomainImage, fileName string) (string, error
 	// 获取文件的完整路径
 	fullPath := filepath.Join(s.LocalFileStorage.GetFullDirPath(), relativePath)
 
-	hasCreateTime := domainImage.HasCreateTime()
-	if !hasCreateTime {
-		return fullPath, nil
-	}
-
 	// 设置文件的访问时间和修改时间为EXIF中的创建时间
 	createTime := domainImage.CreateTime()
 	if err := os.Chtimes(fullPath, createTime, createTime); err != nil {

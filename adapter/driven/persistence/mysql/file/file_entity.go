@@ -14,8 +14,8 @@ type File struct {
 	SizeInBytes int64 `gorm:"not null"`
 	// 文件名
 	Filename string `gorm:"not null"`
-	// 存储路径
-	StoragePath string `gorm:"not null"`
+	// 存储目录
+	StorageDir string `gorm:"not null"`
 	// 来源 1:相机 2:微信
 	Source uint8 `gorm:"not null"`
 	// 修改时间

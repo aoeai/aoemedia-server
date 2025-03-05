@@ -8,42 +8,65 @@ import (
 )
 
 type DomainImage struct {
-	fileContent   *file.Content
-	createTime    time.Time
-	hasCreateTime bool
+	file        *file.DomainFile
+	fileContent *file.Content
+	createTime  time.Time
 }
 
 func NewDomainImage(fc *file.Content) (*DomainImage, error) {
-	if isImage := IsImage(fc); !isImage {
+	if isImage := isImage(fc); !isImage {
 		return nil, fmt.Errorf("文件内容不是图片类型")
 	}
 
-	domainImage := &DomainImage{fileContent: fc, hasCreateTime: false}
+	domainImage := &DomainImage{fileContent: fc}
 
 	// 从EXIF中获取创建时间
-	createTime, err := extractExifCreateTime(fc.Data())
-	if err != nil {
-		return domainImage, nil
-	}
+	createTime, _ := extractExifCreateTime(fc.Data)
 	if createTime.IsZero() {
-		return domainImage, nil
+		createTime = time.Now()
 	}
-	domainImage.hasCreateTime = true
 	domainImage.createTime = createTime
 
 	return domainImage, nil
 }
 
-func (ai *DomainImage) FileContent() *file.Content {
-	return ai.fileContent
+func NewDomainImage1(fileName string, source uint8, fc *file.Content) (*DomainImage, error) {
+	if isImage := isImage(fc); !isImage {
+		return nil, fmt.Errorf("文件内容不是图片类型")
+	}
+
+	// 从EXIF中获取创建时间
+	createTime, _ := extractExifCreateTime(fc.Data)
+	if createTime.IsZero() {
+		createTime = time.Now()
+	}
+
+	domainFile, err := newDomainFile(fileName, createTime, "", fc, source)
+	if err != nil {
+		return nil, err
+	}
+
+	domainImage := &DomainImage{file: domainFile}
+
+	return domainImage, nil
 }
 
-func (ai *DomainImage) CreateTime() time.Time {
-	return ai.createTime
+func newDomainFile(fileName string, createTime time.Time, fullPath string, fileContent *file.Content, source uint8) (*file.DomainFile, error) {
+	if createTime.IsZero() {
+		createTime = time.Now()
+	}
+	metadata := file.NewMetadataBuilder().Source(source).FileName(fileName).StorageDir(fullPath).
+		ModifiedTime(createTime).Build()
+	imageFile, err := file.NewDomainFile(fileContent, metadata)
+	return imageFile, err
 }
 
-func (ai *DomainImage) HasCreateTime() bool {
-	return ai.hasCreateTime
+func (di *DomainImage) FileContent() *file.Content {
+	return di.fileContent
+}
+
+func (di *DomainImage) CreateTime() time.Time {
+	return di.createTime
 }
 
 // extractExifCreateTime 从图片数据中获取EXIF创建时间

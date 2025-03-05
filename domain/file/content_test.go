@@ -50,11 +50,11 @@ func newTestJpgContent(t *testing.T) *Content {
 }
 
 func assertFileSize(t *testing.T, fileContent *Content, expectedSize int64) {
-	got := fileContent.SizeInBytes()
+	got := fileContent.SizeInBytes
 	assert.Equal(t, expectedSize, got, "文件内容的大小应该是 %v 字节，但实际是 %v 字节", expectedSize, got)
 }
 
 func assertHashValue(t *testing.T, fileContent *Content, expectedHash string) {
-	got := fileContent.Hash()
+	got := fileContent.HashValue
 	assert.Equal(t, expectedHash, got, "文件内容的哈希值应该是 %v，但实际是 %v", expectedHash, got)
 }

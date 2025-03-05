@@ -35,8 +35,8 @@ func shouldStoreFileSuccessfully(t *testing.T) {
 	storedContent, err := os.ReadFile(storePath)
 	assert.NoError(t, err, "读取存储的文件失败")
 
-	assert.Equal(t, string(fileContent.Data()), string(storedContent),
-		"存储的文件内容不正确:\n期望的内容: %s\n实际的内容: %s", string(fileContent.Data()), string(storedContent))
+	assert.Equal(t, string(fileContent.Data), string(storedContent),
+		"存储的文件内容不正确:\n期望的内容: %s\n实际的内容: %s", string(fileContent.Data), string(storedContent))
 }
 
 func shouldReturnErrorWhenFilenameIsRepeated(t *testing.T) {
