@@ -28,7 +28,7 @@ func (s *LocalFileStorage) Save(domainFile *file.DomainFile) (fullStoragePath st
 //
 //   - string: 存储文件的完整目录
 //   - error: 存储过程中可能发生的错误，包括：目录创建失败、文件已存在、写入失败等
-func save(domainFile *file.DomainFile) (fullStorageDir string, err error) {
+func save(domainFile *file.DomainFile) (fullStorageDir1 string, err error) {
 	storageFileRootDir := domainFile.StorageDir
 	// 确保子目录存在
 	if err := os.MkdirAll(storageFileRootDir, 0755); err != nil {
@@ -36,25 +36,24 @@ func save(domainFile *file.DomainFile) (fullStorageDir string, err error) {
 	}
 
 	// 构建完整的文件路径
-	fullStorageDir = filepath.Join(storageFileRootDir, domainFile.FileName)
+	fullStoragePath := filepath.Join(storageFileRootDir, domainFile.FileName)
 
 	// 如果文件已经存在，则返回错误
-	if _, err := os.Stat(fullStorageDir); err == nil {
-		return "", fmt.Errorf("文件已经存在: %s", fullStorageDir)
+	if _, err := os.Stat(fullStoragePath); err == nil {
+		return "", fmt.Errorf("文件已经存在: %s", fullStoragePath)
 	}
 
 	// 将文件内容写入到目标路径
-	if err := os.WriteFile(fullStorageDir, domainFile.Data, 0644); err != nil {
+	if err := os.WriteFile(fullStoragePath, domainFile.Data, 0644); err != nil {
 		return "", fmt.Errorf("写入文件失败: %w", err)
 	}
 
-	// 返回相对于基础路径的存储路径
-	relativePath, err := filepath.Rel(storageFileRootDir, fullStorageDir)
-	if err != nil {
-		return "", fmt.Errorf("获取相对路径失败: %w", err)
+	// 设置文件的访问时间和修改时间为EXIF中的创建时间
+	if err := os.Chtimes(fullStoragePath, domainFile.ModifiedTime, domainFile.ModifiedTime); err != nil {
+		logrus.Warnf("%v 设置文件时间失败: %v", fullStoragePath, err)
 	}
 
-	logrus.Infof("文件存储成功: fullFilePath:%s relativePath:%s", fullStorageDir, relativePath)
+	logrus.Infof("文件存储成功: fullStoragePath:%s", fullStoragePath)
 
-	return fullStorageDir, nil
+	return storageFileRootDir, nil
 }

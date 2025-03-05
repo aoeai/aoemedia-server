@@ -36,7 +36,7 @@ func testdataPath(filename string) string {
 
 func assertIsImage(t *testing.T, filePath string, expected bool) {
 	fileContent := file.NewTestFileContent(t, filePath)
-	got := isImage(fileContent)
+	got := isImage(fileContent.Data)
 
 	assert.Equal(t, expected, got)
 }

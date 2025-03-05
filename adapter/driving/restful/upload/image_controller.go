@@ -5,11 +5,13 @@ import (
 	filerepo "github.com/aoemedia-server/adapter/driven/repository/file"
 	"github.com/aoemedia-server/adapter/driving/restful/response"
 	"github.com/aoemedia-server/application/image"
+	"github.com/aoemedia-server/config"
 	"github.com/aoemedia-server/domain/file"
 	imagemodel "github.com/aoemedia-server/domain/image"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"strconv"
+	"time"
 )
 
 // ImageController 图片上传控制器
@@ -38,20 +40,29 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 	logrus.Infof("source: %d", source)
 
 	fileContent := file.NewFileContent(content)
-	domainImage, err := imagemodel.NewDomainImage(fileContent)
+	metadata := file.NewMetadataBuilder().FileName(originalFileName).
+		StorageDir(config.Inst().StorageFileRootDir()).Source(1).
+		ModifiedTime(time.Now()).Build()
+	domainFile, err := file.NewDomainFile(fileContent, metadata)
 	if err != nil {
 		response.SendBadRequest(ctx, err.Error())
 		return
 	}
 
-	storage, err := image.NewImageStorage(domainImage, filerepo.NewRepository())
+	domainImage, err := imagemodel.NewDomainImage(domainFile)
+	if err != nil {
+		response.SendBadRequest(ctx, err.Error())
+		return
+	}
+
+	storage, err := image.NewImageStorage(filerepo.NewRepository())
 	if err != nil {
 		logrus.Error("创建图片服务失败: ", err)
 		response.SendInternalServerError(ctx, "创建图片服务失败")
 		return
 	}
 
-	id, save, err := storage.Save(originalFileName)
+	id, save, err := storage.Save(domainImage)
 	if err != nil {
 		logrus.Error("保存图片失败: ", err)
 		response.SendInternalServerError(ctx, "保存图片失败")

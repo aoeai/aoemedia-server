@@ -1,7 +1,6 @@
 package image
 
 import (
-	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
 	file2 "github.com/aoemedia-server/adapter/driven/persistence/mysql/file"
 	file3 "github.com/aoemedia-server/adapter/driven/repository/file"
 	"github.com/aoemedia-server/common/testconst"
@@ -40,7 +39,6 @@ func Test_createTimeOf(t *testing.T) {
 }
 
 func Test_Save(t *testing.T) {
-	db.InitTestDB()
 	defer file.CleanTestTempDir(t, config.Inst().Storage.ImageRootDir)
 
 	type args struct {
@@ -64,11 +62,11 @@ func Test_Save(t *testing.T) {
 	for _, test := range tests {
 		var id int64
 		t.Run(test.name, func(t *testing.T) {
-			storage, _ := NewImageStorage(test.image, file3.NewRepository())
-			imageId, fullPath, _ := storage.Save(test.filename)
+			storage, _ := NewImageStorage(file3.NewRepository())
+			imageId, storageDir, _ := storage.Save(test.image)
 			id = imageId
 
-			assert.Equal(t, test.expectedPath, fullPath)
+			assert.Equal(t, test.expectedPath, filepath.Join(storageDir, test.filename))
 		})
 
 		t.Cleanup(func() { file2.DeleteTestFile(id) })

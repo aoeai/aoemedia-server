@@ -15,6 +15,7 @@ var testStorageFileRootDir = filepath.Join(os.TempDir(), "temp_txt_success_test"
 func TestLocalFileStorage_Store(t *testing.T) {
 	t.Run("存储文件成功", shouldStoreFileSuccessfully)
 	t.Run("文件名重复时会返回错误", shouldReturnErrorWhenFilenameIsRepeated)
+	t.Run("文件存储成功后，存储文件的修改时间与创建时间等于文件元数据中的修改时间", shouldStoreFileWithCorrectModifiedTime)
 }
 
 func shouldStoreFileSuccessfully(t *testing.T) {
@@ -23,15 +24,16 @@ func shouldStoreFileSuccessfully(t *testing.T) {
 	localStorage := NewLocalFileStorage()
 	domainFile := newTestDomainFile(t, testconst.Txt)
 
-	fullStoragePath, err := localStorage.Save(domainFile)
+	fullStorageDir, err := localStorage.Save(domainFile)
 
 	assert.NoError(t, err, "存储文件失败")
-	assert.NotEmpty(t, fullStoragePath, "存储文件后应该返回存储路径")
+	assert.NotEmpty(t, fullStorageDir, "存储文件后应该返回存储路径")
 
-	expectedFullStoragePath := filepath.Join(testStorageFileRootDir, domainFile.FileName)
-	assert.Equal(t, expectedFullStoragePath, fullStoragePath, "存储文件后返回的存储路径不正确")
+	expectedFullStorageDir := testStorageFileRootDir
+	assert.Equal(t, expectedFullStorageDir, fullStorageDir, "存储文件后返回的存储路径不正确")
 
 	// 验证文件内容
+	fullStoragePath := filepath.Join(fullStorageDir, domainFile.FileName)
 	storedContent, err := os.ReadFile(fullStoragePath)
 	assert.NoError(t, err, "读取存储的文件失败")
 
@@ -54,6 +56,27 @@ func shouldReturnErrorWhenFilenameIsRepeated(t *testing.T) {
 	_, err = localStorage.Save(domainFile)
 	assert.Error(t, err, "存储已存在的文件应该返回错误")
 	assert.Contains(t, err.Error(), "文件已经存在", "错误信息应该包含'文件已经存在'")
+}
+
+func shouldStoreFileWithCorrectModifiedTime(t *testing.T) {
+	defer file.CleanTestTempDir(t, testStorageFileRootDir)
+
+	localStorage := NewLocalFileStorage()
+	domainFile := newTestDomainFile(t, testconst.Txt)
+
+	fullStorageDir, err := localStorage.Save(domainFile)
+	assert.NoError(t, err, "存储文件失败")
+
+	// 验证文件修改时间
+	fullStoragePath := filepath.Join(fullStorageDir, domainFile.FileName)
+	fileInfo, err := os.Stat(fullStoragePath)
+	assert.NoError(t, err, "获取文件信息失败")
+
+	expectedModTime := domainFile.ModifiedTime
+	actualModTime := fileInfo.ModTime()
+
+	assert.Equal(t, expectedModTime.Unix(), actualModTime.Unix(),
+		"文件的修改时间应该是 %v，但实际是 %v", expectedModTime, actualModTime)
 }
 
 func newTestDomainFile(t *testing.T, filename string) *file.DomainFile {

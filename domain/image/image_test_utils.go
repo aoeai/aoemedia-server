@@ -3,15 +3,21 @@ package image
 import (
 	"github.com/aoemedia-server/domain/file"
 	"testing"
+	"time"
 )
 
 func NewTestImage(t *testing.T, filename string) *DomainImage {
 	fileContent := newTestFileContent(t, filename)
-	return newTestImage(fileContent)
+	metadata := file.NewMetadataBuilder().FileName(filename).
+		StorageDir(file.DomainFileTestdataDir()).Source(1).
+		ModifiedTime(time.Now()).Build()
+	domainFile, _ := file.NewDomainFile(fileContent, metadata)
+
+	return newTestImage(domainFile)
 }
 
-func newTestImage(fileContent *file.Content) *DomainImage {
-	domainImage, _ := NewDomainImage(fileContent)
+func newTestImage(domainFile *file.DomainFile) *DomainImage {
+	domainImage, _ := NewDomainImage(domainFile)
 	return domainImage
 }
 

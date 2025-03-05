@@ -7,9 +7,13 @@ import (
 	"testing"
 )
 
-func DomainFileTestdataPath(filename string) string {
+func DomainFileTestdataDir() string {
 	projectRoot, _ := testpath.ProjectRoot()
-	return filepath.Join(projectRoot, "domain", "file", "testdata", filename)
+	return filepath.Join(projectRoot, "domain", "file", "testdata")
+}
+
+func DomainFileTestdataPath(filename string) string {
+	return filepath.Join(DomainFileTestdataDir(), filename)
 }
 
 func NewTestFileContent(t *testing.T, filePath string) *Content {
