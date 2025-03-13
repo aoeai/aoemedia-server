@@ -1,6 +1,9 @@
 package file
 
-import "time"
+import (
+	"github.com/sirupsen/logrus"
+	"time"
+)
 
 type MetadataBuilder struct {
 	metadata *Metadata
@@ -33,5 +36,10 @@ func (b *MetadataBuilder) ModifiedTime(modifiedTime time.Time) *MetadataBuilder 
 }
 
 func (b *MetadataBuilder) Build() *Metadata {
+	err := b.metadata.validate()
+	if err != nil {
+		logrus.Errorf("MetadataBuilder.Build: %v", err)
+		return nil
+	}
 	return b.metadata
 }

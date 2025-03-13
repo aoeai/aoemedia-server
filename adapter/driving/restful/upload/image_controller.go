@@ -2,9 +2,8 @@ package upload
 
 import (
 	"fmt"
-	filerepo "github.com/aoemedia-server/adapter/driven/repository/file"
+	imagerepo "github.com/aoemedia-server/adapter/driven/repository/image"
 	"github.com/aoemedia-server/adapter/driving/restful/response"
-	"github.com/aoemedia-server/application/image"
 	"github.com/aoemedia-server/config"
 	"github.com/aoemedia-server/domain/file"
 	imagemodel "github.com/aoemedia-server/domain/image"
@@ -55,22 +54,15 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 		return
 	}
 
-	storage, err := image.NewImageStorage(filerepo.NewRepository())
-	if err != nil {
-		logrus.Error("创建图片服务失败: ", err)
-		response.SendInternalServerError(ctx, "创建图片服务失败")
-		return
-	}
-
-	id, save, err := storage.Save(domainImage)
+	fileId, err := imagerepo.Inst().Upload(domainImage, 1)
 	if err != nil {
 		logrus.Error("保存图片失败: ", err)
 		response.SendInternalServerError(ctx, "保存图片失败")
 		return
 	}
-	logrus.Infof("图片保存成功: %s", save)
+	logrus.Infof("图片保存成功，fileId: %v", fileId)
 
-	c.sendSuccessResponse(ctx, id, originalFileName, fileContent.SizeInBytes, fileContent.HashValue)
+	c.sendSuccessResponse(ctx, fileId, originalFileName, fileContent.SizeInBytes, fileContent.HashValue)
 }
 
 // parseSource 从请求中解析source参数

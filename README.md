@@ -121,3 +121,4 @@ env APP_ENV=dev ./aoemedia-server
 | inst         | instance    | 实例  |
 | repo         | repository  | 仓库  |
 | -            | persistence | 持久化 |
+| app          | application | 应用  |

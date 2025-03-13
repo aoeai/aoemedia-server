@@ -19,7 +19,7 @@ func (s *LocalFileStorage) Save(domainFile *file.DomainFile) (fullStoragePath st
 	return save(domainFile)
 }
 
-// Save 存储文件内容到本地文件系统
+// save 存储文件内容到本地文件系统
 //
 // fileContent: 要存储的文件内容对象，包含文件的二进制数据
 // fileName: 存储的目标文件名

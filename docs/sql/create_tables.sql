@@ -7,5 +7,6 @@ CREATE TABLE `file` (
   `source` tinyint unsigned NOT NULL COMMENT '来源 1:相机 2:微信',
   `modified_time` datetime NOT NULL COMMENT '修改时间',
   `created_at` datetime NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文件';
+  PRIMARY KEY (`id`),
+  KEY `uk_storage_dir_filename` (`filename`,`storage_dir`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文件';

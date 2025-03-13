@@ -31,34 +31,6 @@ func (c *Content) validate() error {
 	return nil
 }
 
-func (m *Metadata) validate() error {
-	if m == nil {
-		return newError("文件元数据不能为空")
-	}
-	if m.FileName == "" {
-		return newError("文件名不能为空")
-	}
-	if m.StorageDir == "" {
-		return newError("存储路径不能为空")
-	}
-
-	if m.Source == 0 {
-		return newError("文件来源不能为空")
-	}
-	// 来源 1:相机 2:微信
-	sourceList := []uint8{1, 2}
-	if !contains(sourceList, m.Source) {
-		return newError("文件来源无效")
-	}
-
-	if m.ModifiedTime.IsZero() {
-		return newError("文件修改时间不能为空")
-	}
-
-	return nil
-
-}
-
 func newError(text string) error {
 	return errors.New(text)
 }

@@ -2,7 +2,6 @@ package image
 
 import (
 	file2 "github.com/aoemedia-server/adapter/driven/persistence/mysql/file"
-	file3 "github.com/aoemedia-server/adapter/driven/repository/file"
 	"github.com/aoemedia-server/common/testconst"
 	"github.com/aoemedia-server/config"
 	"github.com/aoemedia-server/domain/file"
@@ -62,8 +61,8 @@ func Test_Save(t *testing.T) {
 	for _, test := range tests {
 		var id int64
 		t.Run(test.name, func(t *testing.T) {
-			storage, _ := NewImageStorage(file3.NewRepository())
-			imageId, storageDir, _ := storage.Save(test.image)
+			storage := Inst()
+			imageId, storageDir, _ := storage.save(test.image)
 			id = imageId
 
 			assert.Equal(t, test.expectedPath, filepath.Join(storageDir, test.filename))
