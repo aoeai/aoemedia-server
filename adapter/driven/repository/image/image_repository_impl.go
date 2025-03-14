@@ -4,7 +4,11 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/sirupsen/logrus"
+
 	localFileStorage "github.com/aoemedia-server/adapter/driven/persistence/local_storage/file"
+	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
+	mysqlimage "github.com/aoemedia-server/adapter/driven/persistence/mysql/image"
 	repofile "github.com/aoemedia-server/adapter/driven/repository/file"
 	"github.com/aoemedia-server/common/eventbus"
 	"github.com/aoemedia-server/config"
@@ -24,37 +28,69 @@ var (
 
 func Inst() *Repository {
 	once.Do(func() {
-		instance = &Repository{localFileStorage.NewLocalFileStorage(), repofile.NewRepository()}
+		instance = &Repository{localFileStorage.NewLocalFileStorage(), repofile.Inst()}
 	})
 	return instance
 }
 
-func (r *Repository) Upload(domainImage *image.DomainImage, userId int64) (int64, error) {
-	fileId, _, err := r.save(domainImage)
+func (r *Repository) Upload(domainImage *image.DomainImage, userId int64) (result image.UploadResult, err error) {
+	fullStoragePath, err := r.storeLocally(domainImage)
 	if err != nil {
-		return 0, err
+		logrus.Errorf("上传图片失败，存储本地失败 filename:%v userId:%v %v", domainImage.FileName, userId, err)
+		return image.UploadResult{}, err
 	}
 
-	return fileId, nil
+	// 开启事务
+	tx := db.Inst().Begin()
+	if tx.Error != nil {
+		logrus.Errorf("开启事务失败: %v", tx.Error)
+		return image.UploadResult{}, tx.Error
+	}
+
+	defer func() {
+		if err != nil {
+			logrus.Errorf("上传图片失败，回滚 filename:%v userId:%v %v", domainImage.FileName, userId, err)
+			tx.Rollback()
+			return
+		}
+		if commitErr := tx.Commit().Error; commitErr != nil {
+			logrus.Errorf("上传图片提交事务失败，filename:%v userId:%v %v", domainImage.FileName, userId, commitErr)
+			err = commitErr
+		}
+	}()
+
+	// 保存文件
+	fileId, err := r.fileRepository.Save(domainImage.DomainFile, tx)
+	if err != nil {
+		return image.UploadResult{}, err
+	}
+
+	// 创建图片上传记录
+	imageUploadRecordId, err := mysqlimage.Create(userId, fileId, tx)
+	if err != nil {
+		return image.UploadResult{}, err
+	}
+
+	logrus.Infof("上传图片成功 userId:%v fileId:%v imageUploadRecordId:%v path:%v",
+		userId, fileId, imageUploadRecordId, filepath.Join(fullStoragePath, domainImage.FileName))
+
+	return image.UploadResult{
+		FileId:              fileId,
+		ImageUploadRecordId: imageUploadRecordId,
+		FullStoragePath:     fullStoragePath,
+	}, nil
 }
 
-// save 存储图片
-// 返回值:
-//   - int64: 文件ID
-//   - string: 文件存储的完整目录
-//   - error: 存储过程中可能发生的错误
-func (r *Repository) save(image *image.DomainImage) (fileId int64, fullStorageDir string, err error) {
+// storeLocally 保存图片到本地
+func (r *Repository) storeLocally(image *image.DomainImage) (fullStoragePath string, error error) {
 	fullDirPath := filepath.Join(config.Inst().Storage.ImageRootDir, createTimeOf(image))
 	image.StorageDir = fullDirPath
 
-	storageDir, err := r.fileLocalStorage.Save(image.DomainFile)
+	fullStoragePath, err := r.fileLocalStorage.Save(image.DomainFile)
 	if err != nil {
-		return 0, "", err
+		return "", err
 	}
-
-	id, err := r.fileRepository.Save(image.DomainFile)
-
-	return id, storageDir, err
+	return fullStoragePath, nil
 }
 
 func createTimeOf(image *image.DomainImage) string {

@@ -1,31 +1,42 @@
 package image
 
 import (
-	file2 "github.com/aoemedia-server/adapter/driven/persistence/mysql/file"
-	"github.com/aoemedia-server/common/testconst"
-	"github.com/aoemedia-server/config"
-	"github.com/aoemedia-server/domain/file"
-	imagemodel "github.com/aoemedia-server/domain/image"
-	"github.com/stretchr/testify/assert"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
+	mysqlfile "github.com/aoemedia-server/adapter/driven/persistence/mysql/file"
+	domainFile "github.com/aoemedia-server/domain/file"
+
+	mysqlimage "github.com/aoemedia-server/adapter/driven/persistence/mysql/image"
+	"github.com/aoemedia-server/common/testconst"
+	"github.com/aoemedia-server/domain/image"
+	domainimage "github.com/aoemedia-server/domain/image"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_createTimeOf(t *testing.T) {
 	type args struct {
 		name               string
-		image              *imagemodel.DomainImage
+		image              *image.DomainImage
 		expectedPathSuffix string
 	}
 
-	nowYearMonth := YearMonthOf(time.Now())
+	nowYearMonth := time.Now().Format("2006-01")
 
 	tests := []args{
-		{"当图片的Exif中提取创建时间成功时，使用创建时间的「年-月」做文件夹名",
-			imagemodel.NewTestImage(t, testconst.Jpg), filepath.Join("2024-05")},
-		{"当图片的Exif中提取创建时间失败时，使用当前时间的「年-月」做文件夹名",
-			imagemodel.NewTestImage(t, testconst.Webp), filepath.Join(nowYearMonth)},
+		{
+			name:               "jpg",
+			image:              domainimage.NewTestImage(t, testconst.Jpg),
+			expectedPathSuffix: filepath.Join("2024-05"),
+		},
+		{
+			name:               "webp",
+			image:              domainimage.NewTestImage(t, testconst.Webp),
+			expectedPathSuffix: filepath.Join(nowYearMonth),
+		},
 	}
 
 	for _, test := range tests {
@@ -37,37 +48,86 @@ func Test_createTimeOf(t *testing.T) {
 	}
 }
 
-func Test_Save(t *testing.T) {
-	defer file.CleanTestTempDir(t, config.Inst().Storage.ImageRootDir)
+func TestRepository_Upload(t *testing.T) {
+	t.Run("图片上传成功后", func(t *testing.T) {
+		t.Run("新上传的文件与原文件相同", newlyUploadedFileIsTheSameAsTheOriginalFile)
+		t.Run("file 表中存储的数据正确", dataStoredInFileTableIsCorrect)
+		t.Run("image_upload_record 表中存储的数据正确", dataStoredInImageUploadRecordTableIsCorrect)
+	})
+}
 
-	type args struct {
-		name         string
-		filename     string
-		image        *imagemodel.DomainImage
-		expectedPath string
+func newlyUploadedFileIsTheSameAsTheOriginalFile(t *testing.T) {
+	td := prepareTestUploadData(t)
+	defer teardown(t, td)
+
+	storePath := filepath.Join(td.result.FullStoragePath, td.domainImage.FileName)
+	storedContent, err := os.ReadFile(storePath)
+	assert.NoError(t, err, "读取存储的文件失败")
+	assert.Equal(t, td.domainImage.Data, storedContent, "存储的文件内容不正确")
+}
+
+func dataStoredInFileTableIsCorrect(t *testing.T) {
+	td := prepareTestUploadData(t)
+	defer teardown(t, td)
+
+	fileRecord, err := getFileById(td.result.FileId)
+	assert.NoError(t, err, "获取文件记录失败")
+	assert.Equal(t, td.domainImage.HashValue, fileRecord.Hash, "文件哈希值不正确")
+	assert.Equal(t, td.domainImage.SizeInBytes, fileRecord.SizeInBytes, "文件大小不正确")
+	assert.Equal(t, td.domainImage.FileName, fileRecord.Filename, "文件名不正确")
+	assert.Equal(t, td.domainImage.StorageDir, fileRecord.StorageDir, "存储目录不正确")
+	assert.Equal(t, td.domainImage.Source, fileRecord.Source, "文件来源不正确")
+	assert.Equal(t, td.domainImage.ModifiedTime.Unix(), fileRecord.ModifiedTime.Unix(), "文件修改时间不正确")
+}
+
+func dataStoredInImageUploadRecordTableIsCorrect(t *testing.T) {
+	td := prepareTestUploadData(t)
+	defer teardown(t, td)
+
+	imageUploadRecord, err := getImageUploadRecordById(td.result.ImageUploadRecordId)
+	assert.NoError(t, err, "获取图片上传记录失败")
+	assert.Equal(t, td.userId, imageUploadRecord.UserId, "用户ID不正确")
+	assert.Equal(t, td.result.FileId, imageUploadRecord.FileId, "文件ID不正确")
+}
+
+// 测试数据结构体，用于在测试间共享数据
+type testUploadData struct {
+	domainImage *domainimage.DomainImage
+	userId      int64
+	result      image.UploadResult
+}
+
+// 准备测试数据
+func prepareTestUploadData(t *testing.T) *testUploadData {
+	domainImage := domainimage.NewTestImage(t, testconst.Jpg)
+	domainImage.Source = 1
+	userId := int64(1)
+
+	result, err := Inst().Upload(domainImage, userId)
+	assert.NoError(t, err, "上传图片失败")
+
+	return &testUploadData{
+		domainImage: domainImage,
+		userId:      userId,
+		result:      result,
 	}
+}
 
-	nowYearMonth := YearMonthOf(time.Now())
+// 清理测试数据
+func teardown(t *testing.T, td *testUploadData) {
+	mysqlfile.DeleteTestFile(td.result.FileId)
+	mysqlimage.DeleteTestImageUploadRecordByFileId(td.result.FileId)
+	domainFile.CleanTestTempDir(t, td.result.FullStoragePath)
+}
 
-	tests := []args{
-		{"当图片的Exif中提取创建时间成功时，使用创建时间的「年-月」文件夹存储", testconst.Jpg,
-			imagemodel.NewTestImage(t, testconst.Jpg),
-			filepath.Join(config.Inst().Storage.ImageRootDir, "2024-05", testconst.Jpg)},
-		{"当图片的Exif中提取创建时间失败时，使用当前时间的「年-月」文件夹存储", testconst.Webp,
-			imagemodel.NewTestImage(t, testconst.Webp),
-			filepath.Join(config.Inst().Storage.ImageRootDir, nowYearMonth, testconst.Webp)},
-	}
+func getFileById(id int64) (mysqlfile.File, error) {
+	var file mysqlfile.File
+	result := db.Inst().Where("id = ?", id).Take(&file)
+	return file, result.Error
+}
 
-	for _, test := range tests {
-		var id int64
-		t.Run(test.name, func(t *testing.T) {
-			storage := Inst()
-			imageId, storageDir, _ := storage.save(test.image)
-			id = imageId
-
-			assert.Equal(t, test.expectedPath, filepath.Join(storageDir, test.filename))
-		})
-
-		t.Cleanup(func() { file2.DeleteTestFile(id) })
-	}
+func getImageUploadRecordById(id int64) (mysqlimage.ImageUploadRecord, error) {
+	var record mysqlimage.ImageUploadRecord
+	result := db.Inst().Where("id = ?", id).Take(&record)
+	return record, result.Error
 }

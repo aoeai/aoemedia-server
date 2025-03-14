@@ -8,9 +8,9 @@ type Repository interface {
 	// - userId: 用户 id
 	//
 	// Returns:
-	// - int64: 文件 ID
+	// - UploadResult: 上传结果
 	// - error: 上传过程中可能发生的错误
-	Upload(image *DomainImage, userId int64) (int64, error)
+	Upload(image *DomainImage, userId int64) (UploadResult, error)
 
 	// PublishImageUploadedEvent 发布图片已上传事件
 	//

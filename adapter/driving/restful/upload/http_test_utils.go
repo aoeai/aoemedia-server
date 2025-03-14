@@ -3,7 +3,7 @@ package upload
 import (
 	"bytes"
 	"encoding/json"
-	filerepo "github.com/aoemedia-server/adapter/driven/persistence/mysql/file"
+	mysqlfile "github.com/aoemedia-server/adapter/driven/persistence/mysql/file"
 	"github.com/aoemedia-server/common/converter"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -106,5 +106,5 @@ func assertBadRequest(t *testing.T, testFilePath, expectedErrorMsg, url string) 
 
 func deleteImageFileByDB(response map[string]interface{}) {
 	id, _ := converter.StringToInt64(response["id"].(string))
-	filerepo.DeleteTestFile(id)
+	mysqlfile.DeleteTestFile(id)
 }
