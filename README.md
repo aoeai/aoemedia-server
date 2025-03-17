@@ -14,31 +14,67 @@
 
 ## 项目结构
 
+
 ```
-├── adapter                  # 适配器层
-│   └── driving             # 驱动适配器
-│       └── restful         # RESTful API 接口
-│           └── upload      # 上传控制器
-├── application             # 应用层
-│   └── storage             # 存储服务
-│       └── path           # 路径管理
-├── common                  # 公共组件
-│   ├── os                 # 操作系统相关
-│   └── test*              # 测试工具
-├── config                  # 配置管理
-│   └── *.toml             # 环境配置文件
-└── domain                  # 领域层
-    ├── file               # 文件领域
-    │   ├── model          # 文件模型
-    │   └── storage        # 文件存储接口
-    └── image              # 图片领域
-        ├── model          # 图片模型
-        └── storage        # 图片存储接口
+├── adapter                      # 适配器层
+│   └── driving                  # 主动适配器
+│       └── restful              # RESTful API 接口
+│   └── driven                   # 被动适配器
+│       └── persistence          # 持久层
+│           └── local_storage    # 本地存储
+│           └── mysql            # 数据库存储
+│       └── repository           # 仓库实现
+├── application                  # 应用层
+│   └── file                     # 文件
+│   └── image                    # 图片
+├── common                       # 公共组件
+│   ├── eventbus                 # 事件总线
+│   ├── os                       # 操作系统相关
+│   └── test*                    # 测试工具
+├── config                       # 配置管理
+│   └── *.toml                   # 环境配置文件
+└── domain                       # 领域层
+    ├── file                     # 文件领域
+    └── image                    # 图片领域
 ```
 
 ## 领域模型
 
 ![](docs/images/领域模型.png)
+
+## 领域事件流
+
+![](docs/images/领域事件流.png)
+
+## 分层说明
+
+![](docs/images/分层说明.png)
+
+Domain、Application、Adapter 处于同一个平面，Common 在另一个平面，对上面对平面进行支撑
+
+软件架构中的一个重要原则：**代码中不稳定的部分，应该依赖稳定的部分**。所以，分层架构中越是内层，就越稳定，越是外层，相对就越容易变化
+
+### 名词说明
+
+- Domain：领域层，核心业务逻辑，包含领域模型
+- Application：应用层，处理业务逻辑，调用领域层服务
+    - 接受来自客户端的请求，调用和协调领域层的逻辑来解决问题
+    - 将领域层的处理结果封装为更简单的粗粒度对象，作为对外 API 的参数。这里说的粗粒度对象一般是 DTO（Data Transfer Object），也就是没有逻辑的数据传输对象，应用层负责 DTO 和领域对象的数据转换
+    - 负责处理事务、日志、权限等等横切关注点。从设计模式的角度，这一层相当于**门面**（Facade）模式
+    - **应用层**本身并不包含领域逻辑，而是对**领域层**中的逻辑进行封装和编排，也可称为**应用逻辑**。封装应用逻辑的类通常**没有状态**，只有方法，一般称为**应用服务**
+- Adapter：适配器，把业务功能**适配**到不同的输入输出技术
+    - driving adapter：主动适配器，由外向内的适配器，如 Restful
+    - driven adapter：被动适配器，由内向外的适配器，如 Repository
+- Common：公共组件，包含通用的工具类、常量、异常等
+
+### 参考资料
+
+- [极客时间 ｜ 手把手教你落地 DDD｜ 09｜分层架构：怎样逃离“大泥球”？](http://gk.link/a/11WlS)
+- [【翻译】六边形架构 | 译者：钟敬 ThoughtWorks 首席咨询师](https://zhuanlan.zhihu.com/p/113681224)
+
+## 数据库
+
+![](docs/images/数据库.png)
 
 ## 核心功能
 
