@@ -10,7 +10,7 @@ type DomainImage struct {
 	*file.DomainFile
 }
 
-func NewDomainImage(domainFile *file.DomainFile) (*DomainImage, error) {
+func New(domainFile *file.DomainFile) (*DomainImage, error) {
 	if isImage := isImage(domainFile.Content.Data); !isImage {
 		return nil, fmt.Errorf("文件内容不是图片类型")
 	}

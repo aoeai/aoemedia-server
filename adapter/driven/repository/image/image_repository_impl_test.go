@@ -60,8 +60,7 @@ func newlyUploadedFileIsTheSameAsTheOriginalFile(t *testing.T) {
 	td := prepareTestUploadData(t)
 	defer teardown(t, td)
 
-	storePath := filepath.Join(td.result.FullStoragePath, td.domainImage.FileName)
-	storedContent, err := os.ReadFile(storePath)
+	storedContent, err := os.ReadFile(td.result.FullStoragePath)
 	assert.NoError(t, err, "读取存储的文件失败")
 	assert.Equal(t, td.domainImage.Data, storedContent, "存储的文件内容不正确")
 }
@@ -94,7 +93,7 @@ func dataStoredInImageUploadRecordTableIsCorrect(t *testing.T) {
 type testUploadData struct {
 	domainImage *domainimage.DomainImage
 	userId      int64
-	result      image.UploadResult
+	result      *image.UploadResult
 }
 
 // 准备测试数据

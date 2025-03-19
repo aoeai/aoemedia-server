@@ -2,6 +2,8 @@ package file
 
 import (
 	"github.com/aoemedia-server/common/testpath"
+	"github.com/aoemedia-server/config"
+	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"testing"
@@ -33,5 +35,13 @@ func CleanTestTempDir(t *testing.T, tempDir string) {
 	err := os.RemoveAll(tempDir)
 	if err != nil {
 		t.Errorf("清理临时目录失败: %v", err)
+	}
+}
+
+// DeleteTestTempDir 删除测试临时目录
+func DeleteTestTempDir() {
+	err := os.RemoveAll(config.Inst().Storage.ImageRootDir)
+	if err != nil {
+		logrus.Errorf("CleanTestCurrentDataDir 清理临时目录失败: %v", err)
 	}
 }

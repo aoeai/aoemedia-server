@@ -96,17 +96,6 @@ func TestImageUploadedEvent_Validate(t *testing.T) {
 			},
 			wantErr: "文件路径不能为空",
 		},
-		{
-			name: "FullPathToFile不是绝对路径时，返回错误：文件路径必须是绝对路径",
-			subject: &ImageUploadedEvent{
-				FileId:         1,
-				UserId:         1,
-				Source:         1,
-				ModifiedTime:   fixedTime,
-				FullPathToFile: "path/to/file.jpg",
-			},
-			wantErr: "文件路径必须是绝对路径",
-		},
 	}
 
 	for _, tt := range tests {

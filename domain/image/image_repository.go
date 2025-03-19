@@ -10,7 +10,7 @@ type Repository interface {
 	// Returns:
 	// - UploadResult: 上传结果
 	// - error: 上传过程中可能发生的错误
-	Upload(image *DomainImage, userId int64) (UploadResult, error)
+	Upload(image *DomainImage, userId int64) (*UploadResult, error)
 
 	// PublishImageUploadedEvent 发布图片已上传事件
 	//
@@ -20,5 +20,5 @@ type Repository interface {
 	// Returns:
 	// - ImageUploadedEvent: 图片已上传事件
 	// - error: 发布过程中可能发生的错误
-	PublishImageUploadedEvent(params *ImageUploadedEventPublishParams) (ImageUploadedEvent, error)
+	PublishImageUploadedEvent(params *ImageUploadedEventPublishParams) error
 }

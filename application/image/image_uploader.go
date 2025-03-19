@@ -2,13 +2,17 @@ package image
 
 import (
 	repoimage "github.com/aoemedia-server/adapter/driven/repository/image"
+	repoimagesearch "github.com/aoemedia-server/adapter/driven/repository/image_search"
 	"github.com/aoemedia-server/domain/image"
 	domainimage "github.com/aoemedia-server/domain/image"
+	domainimagesearch "github.com/aoemedia-server/domain/image_search"
+	"github.com/sirupsen/logrus"
 	"sync"
 )
 
 type App struct {
-	repository domainimage.Repository
+	imageRepository       domainimage.Repository
+	imageSearchRepository domainimagesearch.Repository
 }
 
 var (
@@ -18,7 +22,7 @@ var (
 
 func Inst() *App {
 	once.Do(func() {
-		instance = &App{repository: repoimage.Inst()}
+		instance = &App{imageRepository: repoimage.Inst(), imageSearchRepository: repoimagesearch.Inst()}
 	})
 	return instance
 }
@@ -31,11 +35,21 @@ func Inst() *App {
 //
 // Returns:
 // - error: 上传过程中可能发生的错误
-func (app *App) Upload(image *image.DomainImage, userId int64) error {
-	_, err := app.repository.Upload(image, userId)
+func (app *App) Upload(image *image.DomainImage, userId int64) (result *domainimage.UploadResult, error error) {
+	result, err := app.imageRepository.Upload(image, userId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	params := repoimage.NewImageUploadedEventPublishParams(image, result.FileId, userId)
+	app.publishEvent(params)
+
+	return result, nil
+}
+
+func (app *App) publishEvent(params *image.ImageUploadedEventPublishParams) {
+	err := app.imageRepository.PublishImageUploadedEvent(params)
+	if err != nil {
+		logrus.Errorf("发布图片已上传事件失败: %v", err)
+	}
 }

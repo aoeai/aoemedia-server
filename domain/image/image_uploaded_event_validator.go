@@ -2,8 +2,6 @@ package image
 
 import (
 	"fmt"
-	"path/filepath"
-
 	"github.com/aoemedia-server/domain/file"
 )
 
@@ -27,10 +25,6 @@ func (event *ImageUploadedEvent) Validate() error {
 	}
 	if event.FullPathToFile == "" {
 		return fmt.Errorf("文件路径不能为空")
-	}
-	// 验证文件路径格式
-	if !filepath.IsAbs(event.FullPathToFile) {
-		return fmt.Errorf("文件路径必须是绝对路径")
 	}
 
 	return nil

@@ -2,8 +2,8 @@ package upload
 
 import (
 	"fmt"
-	repoimage "github.com/aoemedia-server/adapter/driven/repository/image"
 	"github.com/aoemedia-server/adapter/driving/restful/response"
+	appimage "github.com/aoemedia-server/application/image"
 	"github.com/aoemedia-server/config"
 	"github.com/aoemedia-server/domain/file"
 	imagemodel "github.com/aoemedia-server/domain/image"
@@ -40,6 +40,7 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 
 	fileContent := file.NewFileContent(content)
 	metadata := file.NewMetadataBuilder().FileName(originalFileName).
+		// TODO 路径包含 userId
 		StorageDir(config.Inst().StorageFileRootDir()).Source(1).
 		ModifiedTime(time.Now()).Build()
 	domainFile, err := file.NewDomainFile(fileContent, metadata)
@@ -48,18 +49,18 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 		return
 	}
 
-	domainImage, err := imagemodel.NewDomainImage(domainFile)
+	domainImage, err := imagemodel.New(domainFile)
 	if err != nil {
 		response.SendBadRequest(ctx, err.Error())
 		return
 	}
 
-	result, err := repoimage.Inst().Upload(domainImage, 1)
+	result, err := appimage.Inst().Upload(domainImage, 1)
 	if err != nil {
 		response.SendInternalServerError(ctx, "保存图片失败")
 		return
 	}
-	logrus.Infof("图片保存成功，fileId: %v", result)
+	logrus.Infof("图片保存成功: %v", result)
 
 	c.sendSuccessResponse(ctx, result.FileId, originalFileName, fileContent.SizeInBytes, fileContent.HashValue)
 }

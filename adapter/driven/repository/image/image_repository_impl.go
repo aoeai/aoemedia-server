@@ -33,18 +33,18 @@ func Inst() *Repository {
 	return instance
 }
 
-func (r *Repository) Upload(domainImage *image.DomainImage, userId int64) (result image.UploadResult, err error) {
+func (r *Repository) Upload(domainImage *image.DomainImage, userId int64) (result *image.UploadResult, err error) {
 	fullStoragePath, err := r.storeLocally(domainImage)
 	if err != nil {
 		logrus.Errorf("上传图片失败，存储本地失败 filename:%v userId:%v %v", domainImage.FileName, userId, err)
-		return image.UploadResult{}, err
+		return nil, err
 	}
 
 	// 开启事务
 	tx := db.Inst().Begin()
 	if tx.Error != nil {
 		logrus.Errorf("开启事务失败: %v", tx.Error)
-		return image.UploadResult{}, tx.Error
+		return nil, tx.Error
 	}
 
 	defer func() {
@@ -62,19 +62,21 @@ func (r *Repository) Upload(domainImage *image.DomainImage, userId int64) (resul
 	// 保存文件
 	fileId, err := r.fileRepository.Save(domainImage.DomainFile, tx)
 	if err != nil {
-		return image.UploadResult{}, err
+		logrus.Errorf("保存文件失败 filename:%v userId:%v %v", domainImage.FileName, userId, err)
+		return nil, err
 	}
 
 	// 创建图片上传记录
 	imageUploadRecordId, err := mysqlimage.Create(userId, fileId, tx)
 	if err != nil {
-		return image.UploadResult{}, err
+		logrus.Errorf("创建图片上传记录失败 filename:%v userId:%v %v", domainImage.FileName, userId, err)
+		return nil, err
 	}
 
 	logrus.Infof("上传图片成功 userId:%v fileId:%v imageUploadRecordId:%v path:%v",
 		userId, fileId, imageUploadRecordId, filepath.Join(fullStoragePath, domainImage.FileName))
 
-	return image.UploadResult{
+	return &image.UploadResult{
 		FileId:              fileId,
 		ImageUploadRecordId: imageUploadRecordId,
 		FullStoragePath:     fullStoragePath,
@@ -97,13 +99,15 @@ func createTimeOf(image *image.DomainImage) string {
 	return YearMonthOf(image.ModifiedTime)
 }
 
-func (r *Repository) PublishImageUploadedEvent(params *image.ImageUploadedEventPublishParams) (image.ImageUploadedEvent, error) {
+func (r *Repository) PublishImageUploadedEvent(params *image.ImageUploadedEventPublishParams) error {
 	event, err := newImageUploadedEvent(*params)
 	if err != nil {
-		return image.ImageUploadedEvent{}, err
+		logrus.Errorf("创建图片上传事件失败: %v %v", params, err)
+		return err
 	}
 
 	eventbus.Inst().Publish(image.ImageUploadedEventType, event)
+	logrus.Infof("发布图片上传事件成功: %v", event)
 
-	return image.ImageUploadedEvent{}, nil
+	return nil
 }

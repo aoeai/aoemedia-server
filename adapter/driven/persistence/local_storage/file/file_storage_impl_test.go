@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -24,16 +25,16 @@ func shouldStoreFileSuccessfully(t *testing.T) {
 	localStorage := NewLocalFileStorage()
 	domainFile := newTestDomainFile(t, testconst.Txt)
 
-	fullStorageDir, err := localStorage.Save(domainFile)
+	fullStoragePath, err := localStorage.Save(domainFile)
 
 	assert.NoError(t, err, "存储文件失败")
-	assert.NotEmpty(t, fullStorageDir, "存储文件后应该返回存储路径")
+	assert.NotEmpty(t, fullStoragePath, "存储文件后应该返回存储路径")
 
 	expectedFullStorageDir := testStorageFileRootDir
-	assert.Equal(t, expectedFullStorageDir, fullStorageDir, "存储文件后返回的存储路径不正确")
+	// fullStoragePath 以 expectedFullStorageDir 开头
+	assert.True(t, strings.HasPrefix(fullStoragePath, expectedFullStorageDir), "存储文件后返回的存储路径不正确")
 
 	// 验证文件内容
-	fullStoragePath := filepath.Join(fullStorageDir, domainFile.FileName)
 	storedContent, err := os.ReadFile(fullStoragePath)
 	assert.NoError(t, err, "读取存储的文件失败")
 
@@ -64,11 +65,10 @@ func shouldStoreFileWithCorrectModifiedTime(t *testing.T) {
 	localStorage := NewLocalFileStorage()
 	domainFile := newTestDomainFile(t, testconst.Txt)
 
-	fullStorageDir, err := localStorage.Save(domainFile)
+	fullStoragePath, err := localStorage.Save(domainFile)
 	assert.NoError(t, err, "存储文件失败")
 
 	// 验证文件修改时间
-	fullStoragePath := filepath.Join(fullStorageDir, domainFile.FileName)
 	fileInfo, err := os.Stat(fullStoragePath)
 	assert.NoError(t, err, "获取文件信息失败")
 

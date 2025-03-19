@@ -78,3 +78,8 @@ func initDB(cfg *config.Config) error {
 func Inst() *gorm.DB {
 	return dbInst
 }
+
+// InstForceDelete 获取数据库连接实例（强制删除）
+func InstForceDelete() *gorm.DB {
+	return Inst().Session(&gorm.Session{AllowGlobalUpdate: true}).Unscoped()
+}

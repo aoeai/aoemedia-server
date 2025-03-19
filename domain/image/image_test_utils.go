@@ -17,7 +17,7 @@ func NewTestImage(t *testing.T, filename string) *DomainImage {
 }
 
 func newTestImage(domainFile *file.DomainFile) *DomainImage {
-	domainImage, _ := NewDomainImage(domainFile)
+	domainImage, _ := New(domainFile)
 	return domainImage
 }
 

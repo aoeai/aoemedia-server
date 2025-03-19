@@ -6,8 +6,8 @@ import (
 	"github.com/aoemedia-server/domain/image"
 )
 
-func NewImageUploadedEventPublishParams(domainImage *image.DomainImage, fileId int64, userId int64) image.ImageUploadedEventPublishParams {
-	return image.ImageUploadedEventPublishParams{
+func NewImageUploadedEventPublishParams(domainImage *image.DomainImage, fileId int64, userId int64) *image.ImageUploadedEventPublishParams {
+	return &image.ImageUploadedEventPublishParams{
 		FileId:         fileId,
 		UserId:         userId,
 		Source:         domainImage.Source,
