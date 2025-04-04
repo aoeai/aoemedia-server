@@ -17,7 +17,9 @@ import (
 )
 
 func Test_Upload(t *testing.T) {
-	defer teardown(t)
+	t.Cleanup(func() {
+		teardown(t)
+	})
 
 	t.Run("图片上传成功后返回结果正确", shouldReturnCorrectResultAfterImageUploaded)
 	t.Run("图片上传成功后file表中存储的数据正确", shouldSaveCorrectDataInFileTableAfterImageUploaded)
