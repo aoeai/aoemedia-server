@@ -32,6 +32,10 @@ jobs:
           sleep 1
         done
 
+    - name: Set MySQL transaction isolation level
+      run: |
+        mysql -h127.0.0.1 -P3306 -uroot -proot123456 -e "SET GLOBAL transaction_isolation='REPEATABLE-READ';"
+
     - name: Create database tables
       run: |
         mysql --defaults-extra-file=<(echo -e "[client]\nhost=127.0.0.1\nuser=root\npassword=root123456\n") media < docs/sql/create_tables.sql
