@@ -24,3 +24,7 @@ func SendInternalServerError(ctx *gin.Context, errorMsg string) {
 func sendError(ctx *gin.Context, statusCode int, errorMsg string) {
 	ctx.JSON(statusCode, gin.H{"error": errorMsg})
 }
+
+func SendUnauthorized(ctx *gin.Context) {
+	sendError(ctx, http.StatusUnauthorized, "无效的认证")
+}

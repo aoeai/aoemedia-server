@@ -19,7 +19,7 @@ func shouldStoreFileSuccessfully(t *testing.T) {
 
 	// 创建临时目录作为测试存储路径
 	tempDir := filepath.Join(os.TempDir(), "temp_txt_success_test")
-	defer CleanTestTempDir(t, tempDir)
+	defer CleanTestTempDir(tempDir)
 
 	// 创建存储器
 	storage, err := NewLocalFileStorage(tempDir)
@@ -45,7 +45,7 @@ func shouldReturnErrorWhenFilenameIsRepeated(t *testing.T) {
 
 	// 创建临时目录作为测试存储路径
 	tempDir := filepath.Join(os.TempDir(), "temp_txt_exists_test")
-	defer CleanTestTempDir(t, tempDir)
+	defer CleanTestTempDir(tempDir)
 
 	// 创建存储器
 	storage, err := NewLocalFileStorage(tempDir)

@@ -2,10 +2,11 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"sync"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/BurntSushi/toml"
 )
@@ -15,6 +16,8 @@ type Config struct {
 	Storage StorageConfig `toml:"storage"`
 	// Database 数据库相关配置
 	Database DatabaseConfig `toml:"database"`
+	// Users 用户列表配置
+	Users []UserConfig `toml:"users"`
 }
 
 type StorageConfig struct {
@@ -33,6 +36,11 @@ type DatabaseConfig struct {
 	MaxIdleConns    int    `toml:"max_idle_conns"`
 	MaxOpenConns    int    `toml:"max_open_conns"`
 	ConnMaxLifetime string `toml:"conn_max_lifetime"`
+}
+
+type UserConfig struct {
+	Token string `toml:"token"`
+	ID    int64  `toml:"id"`
 }
 
 var (
@@ -54,22 +62,6 @@ func Inst() *Config {
 		panic(fmt.Sprintf("配置加载失败: %v", initError))
 	}
 	return globalConfig
-}
-
-func (c *Config) StorageFileRootDir() string {
-	return c.Storage.FileRootDir
-}
-
-func configFileName() string {
-	env := os.Getenv("APP_ENV")
-	switch env {
-	case "dev":
-		return "config.dev.toml"
-	case "prod":
-		return "config.prod.toml"
-	default:
-		return "config.test.toml"
-	}
 }
 
 // loadConfig 从TOML配置文件中加载配置
@@ -113,4 +105,25 @@ func loadConfig() (*Config, error) {
 	}
 
 	return config, nil
+}
+
+func configFileName() string {
+	env := os.Getenv("APP_ENV")
+	switch env {
+	case "dev":
+		return "config.dev.toml"
+	case "prod":
+		return "config.prod.toml"
+	default:
+		return "config.test.toml"
+	}
+}
+
+// StorageFileRootDir 文件存储根目录
+func (c *Config) StorageFileRootDir() string {
+	return c.Storage.FileRootDir
+}
+
+func (c *Config) UserList() []UserConfig {
+	return c.Users
 }

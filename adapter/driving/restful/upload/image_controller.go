@@ -2,6 +2,10 @@ package upload
 
 import (
 	"fmt"
+	"github.com/aoemedia-server/adapter/driving/restful/authorization"
+	"strconv"
+	"time"
+
 	"github.com/aoemedia-server/adapter/driving/restful/response"
 	appimage "github.com/aoemedia-server/application/image"
 	"github.com/aoemedia-server/config"
@@ -9,8 +13,6 @@ import (
 	imagemodel "github.com/aoemedia-server/domain/image"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"strconv"
-	"time"
 )
 
 // ImageController 图片上传控制器
@@ -25,9 +27,16 @@ func NewImageController() *ImageController {
 
 // Upload 处理图片上传请求
 func (c *ImageController) Upload(ctx *gin.Context) {
+	auth := authorization.NewAuth(ctx)
+	if auth.Invalid() {
+		response.SendUnauthorized(ctx)
+		return
+	}
+
 	content, originalFileName, err := c.readUploadedFile(ctx)
 	if err != nil {
-		return // readUploadedFile内部已处理错误响应
+		// readUploadedFile内部已处理错误响应
+		return
 	}
 
 	// 获取 source 参数的值
@@ -40,8 +49,7 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 
 	fileContent := file.NewFileContent(content)
 	metadata := file.NewMetadataBuilder().FileName(originalFileName).
-		// TODO 路径包含 userId
-		StorageDir(config.Inst().StorageFileRootDir()).Source(1).
+		StorageDir(config.Inst().StorageFileRootDir()).Source(source).
 		ModifiedTime(time.Now()).Build()
 	domainFile, err := file.NewDomainFile(fileContent, metadata)
 	if err != nil {

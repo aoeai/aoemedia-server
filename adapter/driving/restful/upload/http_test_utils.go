@@ -3,8 +3,6 @@ package upload
 import (
 	"bytes"
 	"encoding/json"
-	mysqlfile "github.com/aoemedia-server/adapter/driven/persistence/mysql/file"
-	"github.com/aoemedia-server/common/converter"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -44,6 +42,7 @@ func postFile(t *testing.T, testFilePath, url string) (int, map[string]interface
 	// 创建测试请求
 	req := httptest.NewRequest(http.MethodPost, url, body)
 	req.Header.Set("Content-Type", writer.FormDataContentType())
+	req.Header.Set("Authorization", "a")
 	w := httptest.NewRecorder()
 
 	// 执行请求
@@ -102,9 +101,4 @@ func assertBadRequest(t *testing.T, testFilePath, expectedErrorMsg, url string) 
 
 	// 验证响应字段
 	assert.Equal(t, expectedErrorMsg, response["error"])
-}
-
-func deleteImageFileByDB(response map[string]interface{}) {
-	id, _ := converter.StringToInt64(response["id"].(string))
-	mysqlfile.DeleteTestFile(id)
 }

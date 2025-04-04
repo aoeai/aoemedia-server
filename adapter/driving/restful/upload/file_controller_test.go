@@ -8,7 +8,7 @@ import (
 )
 
 func TestFileController_Upload(t *testing.T) {
-	defer file.CleanTestTempDir(t, config.Inst().StorageFileRootDir())
+	defer file.CleanTestTempDir(config.Inst().StorageFileRootDir())
 
 	t.Run("上传 Txt 文件成功", func(t *testing.T) {
 		testFilePath := file.DomainFileTestdataPath(testconst.Txt)

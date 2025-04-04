@@ -20,7 +20,7 @@ func TestLocalFileStorage_Store(t *testing.T) {
 }
 
 func shouldStoreFileSuccessfully(t *testing.T) {
-	defer file.CleanTestTempDir(t, testStorageFileRootDir)
+	defer file.CleanTestTempDir(testStorageFileRootDir)
 
 	localStorage := NewLocalFileStorage()
 	domainFile := newTestDomainFile(t, testconst.Txt)
@@ -43,7 +43,7 @@ func shouldStoreFileSuccessfully(t *testing.T) {
 }
 
 func shouldReturnErrorWhenFilenameIsRepeated(t *testing.T) {
-	defer file.CleanTestTempDir(t, testStorageFileRootDir)
+	defer file.CleanTestTempDir(testStorageFileRootDir)
 
 	localStorage := NewLocalFileStorage()
 	domainFile := newTestDomainFile(t, testconst.Txt)
@@ -60,7 +60,7 @@ func shouldReturnErrorWhenFilenameIsRepeated(t *testing.T) {
 }
 
 func shouldStoreFileWithCorrectModifiedTime(t *testing.T) {
-	defer file.CleanTestTempDir(t, testStorageFileRootDir)
+	defer file.CleanTestTempDir(testStorageFileRootDir)
 
 	localStorage := NewLocalFileStorage()
 	domainFile := newTestDomainFile(t, testconst.Txt)

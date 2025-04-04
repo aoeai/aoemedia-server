@@ -6,7 +6,7 @@ import (
 )
 
 func CleanTestTempDir(t *testing.T, tempDir string) {
-	file.CleanTestTempDir(t, tempDir)
+	file.CleanTestTempDir(tempDir)
 }
 
 // DeleteTestTempDir 删除测试临时目录

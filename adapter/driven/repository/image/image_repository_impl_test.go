@@ -116,7 +116,7 @@ func prepareTestUploadData(t *testing.T) *testUploadData {
 func teardown(t *testing.T, td *testUploadData) {
 	mysqlfile.DeleteTestFile(td.result.FileId)
 	mysqlimage.DeleteTestImageUploadRecordByFileId(td.result.FileId)
-	domainFile.CleanTestTempDir(t, td.result.FullStoragePath)
+	domainFile.CleanTestTempDir(td.result.FullStoragePath)
 }
 
 func getFileById(id int64) (mysqlfile.File, error) {

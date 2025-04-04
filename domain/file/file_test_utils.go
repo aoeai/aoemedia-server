@@ -30,11 +30,11 @@ func NewTestFileContent(t *testing.T, filePath string) *Content {
 	return fileContent
 }
 
-func CleanTestTempDir(t *testing.T, tempDir string) {
+func CleanTestTempDir(tempDir string) {
 	// 删除临时目录及其所有内容
 	err := os.RemoveAll(tempDir)
 	if err != nil {
-		t.Errorf("清理临时目录失败: %v", err)
+		logrus.Errorf("清理临时目录失败: %v", err)
 	}
 }
 
