@@ -2,6 +2,7 @@ package image
 
 import (
 	"path/filepath"
+	"strconv"
 	"sync"
 
 	"github.com/sirupsen/logrus"
@@ -34,7 +35,7 @@ func Inst() *Repository {
 }
 
 func (r *Repository) Upload(domainImage *image.DomainImage, userId int64) (result *image.UploadResult, err error) {
-	fullStoragePath, err := r.storeLocally(domainImage)
+	fullStoragePath, err := r.storeLocally(domainImage, userId)
 	if err != nil {
 		logrus.Errorf("上传图片失败，存储本地失败 filename:%v userId:%v %v", domainImage.FileName, userId, err)
 		return nil, err
@@ -84,8 +85,8 @@ func (r *Repository) Upload(domainImage *image.DomainImage, userId int64) (resul
 }
 
 // storeLocally 保存图片到本地
-func (r *Repository) storeLocally(image *image.DomainImage) (fullStoragePath string, error error) {
-	fullDirPath := filepath.Join(config.Inst().Storage.ImageRootDir, createTimeOf(image))
+func (r *Repository) storeLocally(image *image.DomainImage, userId int64) (fullStoragePath string, error error) {
+	fullDirPath := filepath.Join(config.Inst().Storage.ImageRootDir, strconv.FormatInt(userId, 10), createTimeOf(image))
 	image.StorageDir = fullDirPath
 
 	fullStoragePath, err := r.fileLocalStorage.Save(image.DomainFile)

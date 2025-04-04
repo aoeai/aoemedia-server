@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/aoemedia-server/adapter/driving/restful/authorization"
 	"github.com/aoemedia-server/config"
-	"path/filepath"
 	"strconv"
 	"time"
 
@@ -50,7 +49,7 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 
 	fileContent := file.NewFileContent(content)
 	metadata := file.NewMetadataBuilder().FileName(originalFileName).
-		StorageDir(filepath.Join(config.Inst().StorageFileRootDir(), strconv.FormatInt(auth.UserId, 10))).
+		StorageDir(config.Inst().StorageFileRootDir()).
 		Source(source).
 		ModifiedTime(time.Now()).Build()
 	domainFile, err := file.NewDomainFile(fileContent, metadata)
@@ -65,7 +64,7 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 		return
 	}
 
-	result, err := appimage.Inst().Upload(domainImage, 1)
+	result, err := appimage.Inst().Upload(domainImage, auth.UserId)
 	if err != nil {
 		response.SendInternalServerError(ctx, "保存图片失败")
 		return
