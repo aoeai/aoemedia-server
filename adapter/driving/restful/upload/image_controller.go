@@ -3,12 +3,13 @@ package upload
 import (
 	"fmt"
 	"github.com/aoemedia-server/adapter/driving/restful/authorization"
+	"github.com/aoemedia-server/config"
+	"path/filepath"
 	"strconv"
 	"time"
 
 	"github.com/aoemedia-server/adapter/driving/restful/response"
 	appimage "github.com/aoemedia-server/application/image"
-	"github.com/aoemedia-server/config"
 	"github.com/aoemedia-server/domain/file"
 	imagemodel "github.com/aoemedia-server/domain/image"
 	"github.com/gin-gonic/gin"
@@ -49,7 +50,8 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 
 	fileContent := file.NewFileContent(content)
 	metadata := file.NewMetadataBuilder().FileName(originalFileName).
-		StorageDir(config.Inst().StorageFileRootDir()).Source(source).
+		StorageDir(filepath.Join(config.Inst().StorageFileRootDir(), strconv.FormatInt(auth.UserId, 10))).
+		Source(source).
 		ModifiedTime(time.Now()).Build()
 	domainFile, err := file.NewDomainFile(fileContent, metadata)
 	if err != nil {

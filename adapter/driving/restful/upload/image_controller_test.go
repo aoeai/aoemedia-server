@@ -19,7 +19,7 @@ func TestImageController_Upload(t *testing.T) {
 	t.Run("上传Jpg图片成功", func(t *testing.T) {
 		testFilePath := file.DomainFileTestdataPath(testconst.Jpg)
 
-		code, response := postFile(t, testFilePath, Image)
+		code, response := postFile(t, testFilePath, Image, "b")
 
 		assertSuccess(t, code, response, testconst.Jpg,
 			"f4834082fb18222c0e9704ba04a350d73a87c69d9c794dabf20834f95b194b9b", float64(2835185))
@@ -28,7 +28,7 @@ func TestImageController_Upload(t *testing.T) {
 	t.Run("上传Webp图片成功", func(t *testing.T) {
 		testFilePath := file.DomainFileTestdataPath(testconst.Webp)
 
-		code, response := postFile(t, testFilePath, Image)
+		code, response := postFile(t, testFilePath, Image, "b")
 
 		assertSuccess(t, code, response, testconst.Webp,
 			"548d859e1efa5f6d3d31aa8c444f7028f31bd4054707acbc77bfa20e948aeeb2", float64(98700))

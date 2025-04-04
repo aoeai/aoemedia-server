@@ -18,7 +18,7 @@ import (
 // 返回值:
 //   - int: HTTP响应状态码
 //   - map[string]interface{}: 响应内容，包含message（上传结果消息）、filename（文件名）、size（文件大小）和hash（文件哈希值）
-func postFile(t *testing.T, testFilePath, url string) (int, map[string]interface{}) {
+func postFile(t *testing.T, testFilePath, url string, token string) (int, map[string]interface{}) {
 	file := openTestFile(t, testFilePath)
 	defer closeTestFile(t, file)
 
@@ -42,7 +42,7 @@ func postFile(t *testing.T, testFilePath, url string) (int, map[string]interface
 	// 创建测试请求
 	req := httptest.NewRequest(http.MethodPost, url, body)
 	req.Header.Set("Content-Type", writer.FormDataContentType())
-	req.Header.Set("Authorization", "a")
+	req.Header.Set("Authorization", token)
 	w := httptest.NewRecorder()
 
 	// 执行请求
@@ -94,7 +94,7 @@ func assertSuccess(t *testing.T, code int, response map[string]interface{}, expe
 }
 
 func assertBadRequest(t *testing.T, testFilePath, expectedErrorMsg, url string) {
-	code, response := postFile(t, testFilePath, url)
+	code, response := postFile(t, testFilePath, url, "b")
 
 	// 验证响应状态码
 	assert.Equal(t, http.StatusBadRequest, code)

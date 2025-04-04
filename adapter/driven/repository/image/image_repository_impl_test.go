@@ -58,7 +58,9 @@ func TestRepository_Upload(t *testing.T) {
 
 func newlyUploadedFileIsTheSameAsTheOriginalFile(t *testing.T) {
 	td := prepareTestUploadData(t)
-	defer teardown(t, td)
+	t.Cleanup(func() {
+		teardown(t, td)
+	})
 
 	storedContent, err := os.ReadFile(td.result.FullStoragePath)
 	assert.NoError(t, err, "读取存储的文件失败")
@@ -67,7 +69,9 @@ func newlyUploadedFileIsTheSameAsTheOriginalFile(t *testing.T) {
 
 func dataStoredInFileTableIsCorrect(t *testing.T) {
 	td := prepareTestUploadData(t)
-	defer teardown(t, td)
+	t.Cleanup(func() {
+		teardown(t, td)
+	})
 
 	fileRecord, err := getFileById(td.result.FileId)
 	assert.NoError(t, err, "获取文件记录失败")
@@ -81,7 +85,9 @@ func dataStoredInFileTableIsCorrect(t *testing.T) {
 
 func dataStoredInImageUploadRecordTableIsCorrect(t *testing.T) {
 	td := prepareTestUploadData(t)
-	defer teardown(t, td)
+	t.Cleanup(func() {
+		teardown(t, td)
+	})
 
 	imageUploadRecord, err := getImageUploadRecordById(td.result.ImageUploadRecordId)
 	assert.NoError(t, err, "获取图片上传记录失败")
