@@ -8,6 +8,7 @@ import (
 
 	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
 	mysqlfile "github.com/aoemedia-server/adapter/driven/persistence/mysql/file"
+	"github.com/aoemedia-server/config"
 	domainFile "github.com/aoemedia-server/domain/file"
 
 	mysqlimage "github.com/aoemedia-server/adapter/driven/persistence/mysql/image"
@@ -16,6 +17,40 @@ import (
 	domainimage "github.com/aoemedia-server/domain/image"
 	"github.com/stretchr/testify/assert"
 )
+
+func Test_fullDirPath(t *testing.T) {
+
+	// 准备测试用例
+	tests := []struct {
+		name     string
+		userId   int64
+		image    *image.DomainImage
+		expected string
+	}{
+		{
+			name:     "图片自带修改时间时路径=用户ID+图片原始年月",
+			userId:   12345,
+			image:    domainimage.NewTestImage(t, testconst.Jpg),
+			expected: filepath.Join(config.Inst().Storage.ImageRootDir, "12345", "2024-05"),
+		},
+		{
+			name:     "图片无修改时间时路径=用户ID+当前年月",
+			userId:   12345,
+			image:    domainimage.NewTestImage(t, testconst.Webp),
+			expected: filepath.Join(config.Inst().Storage.ImageRootDir, "12345", YearMonthOf(time.Now())),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// 执行测试
+			got := fullDirPath(tt.image, tt.userId)
+
+			// 验证结果
+			assert.Equal(t, tt.expected, got, "生成的路径不正确")
+		})
+	}
+}
 
 func Test_createTimeOf(t *testing.T) {
 	type args struct {
@@ -59,7 +94,7 @@ func TestRepository_Upload(t *testing.T) {
 func newlyUploadedFileIsTheSameAsTheOriginalFile(t *testing.T) {
 	td := prepareTestUploadData(t)
 	t.Cleanup(func() {
-		teardown(t, td)
+		teardown(td)
 	})
 
 	storedContent, err := os.ReadFile(td.result.FullStoragePath)
@@ -70,7 +105,7 @@ func newlyUploadedFileIsTheSameAsTheOriginalFile(t *testing.T) {
 func dataStoredInFileTableIsCorrect(t *testing.T) {
 	td := prepareTestUploadData(t)
 	t.Cleanup(func() {
-		teardown(t, td)
+		teardown(td)
 	})
 
 	fileRecord, err := getFileById(td.result.FileId)
@@ -86,7 +121,7 @@ func dataStoredInFileTableIsCorrect(t *testing.T) {
 func dataStoredInImageUploadRecordTableIsCorrect(t *testing.T) {
 	td := prepareTestUploadData(t)
 	t.Cleanup(func() {
-		teardown(t, td)
+		teardown(td)
 	})
 
 	imageUploadRecord, err := getImageUploadRecordById(td.result.ImageUploadRecordId)
@@ -119,7 +154,7 @@ func prepareTestUploadData(t *testing.T) *testUploadData {
 }
 
 // 清理测试数据
-func teardown(t *testing.T, td *testUploadData) {
+func teardown(td *testUploadData) {
 	mysqlfile.DeleteTestFile(td.result.FileId)
 	mysqlimage.DeleteTestImageUploadRecordByFileId(td.result.FileId)
 	domainFile.CleanTestTempDir(td.result.FullStoragePath)

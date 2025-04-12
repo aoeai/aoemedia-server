@@ -85,15 +85,21 @@ func (r *Repository) Upload(domainImage *image.DomainImage, userId int64) (resul
 }
 
 // storeLocally 保存图片到本地
+//
+// Returns:
+// - fullStoragePath: 图片的完整存储路径
 func (r *Repository) storeLocally(image *image.DomainImage, userId int64) (fullStoragePath string, error error) {
-	fullDirPath := filepath.Join(config.Inst().Storage.ImageRootDir, strconv.FormatInt(userId, 10), createTimeOf(image))
-	image.StorageDir = fullDirPath
+	image.StorageDir = fullDirPath(image, userId)
 
 	fullStoragePath, err := r.fileLocalStorage.Save(image.DomainFile)
 	if err != nil {
 		return "", err
 	}
 	return fullStoragePath, nil
+}
+
+func fullDirPath(image *image.DomainImage, userId int64) string {
+	return filepath.Join(config.Inst().Storage.ImageRootDir, strconv.FormatInt(userId, 10), createTimeOf(image))
 }
 
 func createTimeOf(image *image.DomainImage) string {
