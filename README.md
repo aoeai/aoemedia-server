@@ -14,10 +14,6 @@
 
 ![](docs/images/领域模型.png)
 
-## 领域事件流
-
-![](docs/images/领域事件流.png)
-
 ## 分层说明
 
 ![](docs/images/分层说明.png)
