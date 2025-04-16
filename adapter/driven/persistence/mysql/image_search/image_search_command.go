@@ -2,7 +2,7 @@ package image_search
 
 import (
 	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
-	domainimagesearch "github.com/aoemedia-server/domain/image_search"
+	domainimagesearch "github.com/aoemedia-server/domain/image/search_service"
 )
 
 func Create(imageSearch domainimagesearch.ImageSearch) (id int64, error error) {

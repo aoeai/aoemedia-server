@@ -1,4 +1,4 @@
-package image_search
+package search_service
 
 import (
 	"time"

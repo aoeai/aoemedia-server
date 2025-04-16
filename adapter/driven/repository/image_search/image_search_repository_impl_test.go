@@ -1,13 +1,13 @@
 package image_search
 
 import (
+	domainimagesearch "github.com/aoemedia-server/domain/image/search_service"
 	"testing"
 	"time"
 
 	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
 
 	mysqlimagesearch "github.com/aoemedia-server/adapter/driven/persistence/mysql/image_search"
-	domainimagesearch "github.com/aoemedia-server/domain/image_search"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -78,7 +78,7 @@ func shouldReturnErrorWhenFileIdExist(t *testing.T) {
 	// 准备测试数据
 	testTime := time.Now()
 	imageSearch := domainimagesearch.ImageSearch{
-		UserId:       1,
+		UserId:       2,
 		FileId:       100,
 		Source:       1,
 		ModifiedTime: testTime,

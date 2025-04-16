@@ -5,7 +5,7 @@ import (
 	repoimagesearch "github.com/aoemedia-server/adapter/driven/repository/image_search"
 	"github.com/aoemedia-server/domain/image"
 	domainimage "github.com/aoemedia-server/domain/image"
-	domainimagesearch "github.com/aoemedia-server/domain/image_search"
+	domainimagesearch "github.com/aoemedia-server/domain/image/search_service"
 	"github.com/sirupsen/logrus"
 	"sync"
 )

@@ -2,16 +2,16 @@ package image_search
 
 import (
 	"github.com/aoemedia-server/common/eventbus"
+	"github.com/aoemedia-server/domain/image/search_service"
 	"sync"
 
 	mysqlimagesearch "github.com/aoemedia-server/adapter/driven/persistence/mysql/image_search"
 	domainimage "github.com/aoemedia-server/domain/image"
-	domainimagesearch "github.com/aoemedia-server/domain/image_search"
 	"github.com/sirupsen/logrus"
 )
 
 type Repository struct {
-	repository *domainimagesearch.Repository
+	repository *search_service.Repository
 }
 
 var (
@@ -37,7 +37,7 @@ func (r *Repository) SubscribeImageUploadedEvent(event domainimage.ImageUploaded
 		return
 	}
 
-	imageSearch, err := domainimagesearch.New(event)
+	imageSearch, err := search_service.New(event)
 	if err != nil {
 		logrus.Errorf("订阅发布图片已上传事件-创建 ImageSearch 失败: %v", err)
 		return
@@ -49,7 +49,7 @@ func (r *Repository) SubscribeImageUploadedEvent(event domainimage.ImageUploaded
 	}
 }
 
-func (r *Repository) Save(imageSearch domainimagesearch.ImageSearch) (id int64, error error) {
+func (r *Repository) Save(imageSearch search_service.ImageSearch) (id int64, error error) {
 	id, err := mysqlimagesearch.Create(imageSearch)
 	if err != nil {
 		return 0, err

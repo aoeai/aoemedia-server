@@ -1,11 +1,11 @@
 package image_search
 
 import (
+	"github.com/aoemedia-server/domain/image/search_service"
 	"testing"
 	"time"
 
 	"github.com/aoemedia-server/adapter/driven/persistence/mysql/db"
-	"github.com/aoemedia-server/domain/image_search"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,12 +14,12 @@ func TestCreate(t *testing.T) {
 	testTime := time.Now()
 	tests := []struct {
 		name        string
-		imageSearch image_search.ImageSearch
+		imageSearch search_service.ImageSearch
 		wantErr     bool
 	}{
 		{
 			name: "正常场景-成功创建图片搜索记录",
-			imageSearch: image_search.ImageSearch{
+			imageSearch: search_service.ImageSearch{
 				UserId:       1,
 				FileId:       100,
 				Source:       1,
