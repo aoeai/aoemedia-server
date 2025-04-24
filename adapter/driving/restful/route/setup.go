@@ -4,6 +4,7 @@ import (
 	"github.com/aoemedia-server/adapter/driving/restful/image_search"
 	"github.com/aoemedia-server/adapter/driving/restful/route/url"
 	"github.com/aoemedia-server/adapter/driving/restful/upload"
+	"github.com/aoemedia-server/config"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -30,17 +31,19 @@ func setTrustedProxies(router *gin.Engine) bool {
 	return false
 }
 
+// setupRoutes 配置路由
+func setupRoutes(r *gin.Engine) {
+	r.Static("/images", config.Inst().Storage.ImageRootDir)
+
+	r.POST(url.File, upload.NewFileController().Upload)
+	r.POST(url.Image, upload.NewImageController().Upload)
+
+	r.GET(url.ImageSearch, image_search.NewImageSearchController().List)
+}
+
 func startEngine(ginEngine *gin.Engine) {
 	err := ginEngine.Run(":8080")
 	if err != nil {
 		logrus.Fatalf("服务器启动失败: %v", err)
 	}
-}
-
-// setupRoutes 配置路由
-func setupRoutes(r *gin.Engine) {
-	r.POST(url.File, upload.NewFileController().Upload)
-	r.POST(url.Image, upload.NewImageController().Upload)
-
-	r.GET(url.ImageSearch, image_search.NewImageSearchController().List)
 }

@@ -1,6 +1,10 @@
 package image_search
 
-import "github.com/aoemedia-server/application/image"
+import (
+	"github.com/aoemedia-server/application/image"
+	"github.com/aoemedia-server/config"
+	"strings"
+)
 
 type ListResult struct {
 	// 最早的修改时间
@@ -16,8 +20,8 @@ type GroupedData struct {
 }
 
 type ImageInfo struct {
-	// 文件完整路径
-	FullPath string
+	// 图片访问地址
+	Url string
 }
 
 func convertToListResult(svcResult image.ImageSearchResult) ListResult {
@@ -46,8 +50,9 @@ func convertToGroupedDataList(groupedDataList []image.GroupedData) []GroupedData
 func convertToImageInfoList(imageInfoList []image.ImageInfo) []ImageInfo {
 	var result []ImageInfo
 	for _, info := range imageInfoList {
+		storage := config.Inst().Storage
 		result = append(result, ImageInfo{
-			FullPath: info.FullPath,
+			Url: strings.Replace(info.FullPath, storage.ImageRootDir, storage.ImageURLPrefix, 1),
 		})
 	}
 	return result

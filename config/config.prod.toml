@@ -4,6 +4,8 @@
 file_root_dir = "/Users/aoe/temp-prod/files"
 # 图片根目录
 image_root_dir = "/Users/aoe/temp-prod/images"
+# 图片访问路径前缀
+image_url_prefix = "http://localhost:8080/images/"
 
 # 数据库配置
 [database]

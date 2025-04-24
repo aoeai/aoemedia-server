@@ -21,8 +21,9 @@ type Config struct {
 }
 
 type StorageConfig struct {
-	FileRootDir  string `toml:"file_root_dir"`
-	ImageRootDir string `toml:"image_root_dir"`
+	FileRootDir    string `toml:"file_root_dir"`
+	ImageRootDir   string `toml:"image_root_dir"`
+	ImageURLPrefix string `toml:"image_url_prefix"`
 }
 
 type DatabaseConfig struct {
@@ -52,6 +53,7 @@ var (
 // Inst 获取全局配置，使用sync.Once确保配置只加载一次
 func Inst() *Config {
 	once.Do(func() {
+		initEnv()
 		globalConfig, initError = loadConfig()
 		if initError == nil {
 			logrus.Infof("配置加载成功: %+v", globalConfig)
@@ -62,6 +64,16 @@ func Inst() *Config {
 		panic(fmt.Sprintf("配置加载失败: %v", initError))
 	}
 	return globalConfig
+}
+
+func initEnv() {
+	// 如果环境变量未设置，则使用默认值"dev"
+	if os.Getenv("APP_ENV") == "" {
+		if err := os.Setenv("APP_ENV", "dev"); err != nil {
+			logrus.Fatalf("环境变量设置失败: %v", err)
+		}
+	}
+	logrus.Printf("当前环境变量: %s", os.Getenv("APP_ENV"))
 }
 
 // loadConfig 从TOML配置文件中加载配置
