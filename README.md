@@ -94,9 +94,9 @@ go test -v ./...
 go install gotest.tools/gotestsum@latest
 
 # 执行测试
-gotestsum
+APP_ENV=test gotestsum
 # 或使用 testname 格式
-gotestsum --format testname
+APP_ENV=test gotestsum --format testname
 ```
 
 ### 构建和运行
