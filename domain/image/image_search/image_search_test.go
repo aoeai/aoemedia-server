@@ -1,4 +1,4 @@
-package search_service
+package image_search
 
 import (
 	"testing"

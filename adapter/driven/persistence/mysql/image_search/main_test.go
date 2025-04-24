@@ -24,6 +24,7 @@ func TestMain(m *testing.M) {
 
 func setup() {
 	db.InitTestDB()
+	initTestImages()
 }
 
 func teardown() {

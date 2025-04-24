@@ -3,6 +3,7 @@ package upload
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/aoemedia-server/adapter/driving/restful/route/url"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -62,8 +63,8 @@ func newTestRouter() *gin.Engine {
 	// 设置测试环境
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
-	r.POST(File, NewFileController().Upload)
-	r.POST(Image, NewImageController().Upload)
+	r.POST(url.File, NewFileController().Upload)
+	r.POST(url.Image, NewImageController().Upload)
 
 	return r
 }

@@ -40,31 +40,6 @@ Domain、Application、Adapter 处于同一个平面，Common 在另一个平面
 - [极客时间 ｜ 手把手教你落地 DDD｜ 09｜分层架构：怎样逃离“大泥球”？](http://gk.link/a/11WlS)
 - [【翻译】六边形架构 | 译者：钟敬 ThoughtWorks 首席咨询师](https://zhuanlan.zhihu.com/p/113681224)
 
-## 项目结构
-
-```
-├── adapter                      # 适配器层
-│   └── driving                  # 主动适配器
-│       └── restful              # RESTful API 接口
-│   └── driven                   # 被动适配器
-│       └── persistence          # 持久层
-│           └── local_storage    # 本地存储
-│           └── mysql            # 数据库存储
-│       └── repository           # 仓库实现
-├── application                  # 应用层
-│   └── file                     # 文件
-│   └── image                    # 图片
-├── common                       # 公共组件
-│   ├── eventbus                 # 事件总线
-│   ├── os                       # 操作系统相关
-│   └── test*                    # 测试工具
-├── config                       # 配置管理
-│   └── *.toml                   # 环境配置文件
-└── domain                       # 领域层
-    ├── file                     # 文件领域
-    └── image                    # 图片领域
-```
-
 ## 数据库
 
 ![](docs/images/数据库.png)
@@ -84,6 +59,10 @@ Domain、Application、Adapter 处于同一个平面，Common 在另一个平面
 ### 后端框架
 - Go 1.21：利用最新特性提升性能和开发效率
 - Gin Web Framework：高性能HTTP Web框架
+- Gorm：ORM 框架，简化数据库操作
+- Logrus：日志框架，支持多种日志格式和输出方式
+- testify/mock：单元测试框架，提供丰富的断言和模拟功能
+- gotestsum：测试报告工具，提供详细的测试报告和覆盖率分析
 
 ### 开发方法论
 - 测试驱动开发「TDD」：保证代码质量和可维护性，支持即时重构，测试即文档
@@ -140,6 +119,31 @@ go build
 运行服务：
 ```bash
 env APP_ENV=dev ./aoemedia-server
+```
+
+### 项目结构简介
+
+```
+├── adapter                      # 适配器层
+│   └── driving                  # 主动适配器
+│       └── restful              # RESTful API 接口
+│   └── driven                   # 被动适配器
+│       └── persistence          # 持久层
+│           └── local_storage    # 本地存储
+│           └── mysql            # 数据库存储
+│       └── repository           # 仓库实现
+├── application                  # 应用层
+│   └── file                     # 文件
+│   └── image                    # 图片
+├── common                       # 公共组件
+│   ├── eventbus                 # 事件总线
+│   ├── os                       # 操作系统相关
+│   └── test*                    # 测试工具
+├── config                       # 配置管理
+│   └── *.toml                   # 环境配置文件
+└── domain                       # 领域层
+    ├── file                     # 文件领域
+    └── image                    # 图片领域
 ```
 
 ## 词汇表

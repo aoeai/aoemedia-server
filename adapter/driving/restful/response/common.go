@@ -6,7 +6,11 @@ import (
 )
 
 // SendSuccess 发送成功响应
-func SendSuccess(ctx *gin.Context, data gin.H) {
+func SendSuccess(ctx *gin.Context, data any) {
+	if data == nil {
+		data = struct{}{}
+	}
+
 	ctx.JSON(http.StatusOK, data)
 }
 

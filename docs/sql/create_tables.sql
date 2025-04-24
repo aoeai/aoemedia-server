@@ -33,7 +33,7 @@ CREATE TABLE `image_search` (
   `created_at` datetime(6) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_file_id` (`file_id`),
-  KEY `idx_user_id_year_month_day` (`user_id`,`year`,`month`,`day`),
-  KEY `idx_user_id_modified_time` (`user_id`,`modified_time`)
+  UNIQUE KEY `idx_user_id_modified_time` (`user_id`,`modified_time`) USING BTREE,
+  KEY `idx_user_id_year_month_day` (`user_id`,`year`,`month`,`day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='图片搜索';
 

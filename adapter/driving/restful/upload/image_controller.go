@@ -64,7 +64,7 @@ func (c *ImageController) Upload(ctx *gin.Context) {
 		return
 	}
 
-	result, err := appimage.Inst().Upload(domainImage, auth.UserId)
+	result, err := appimage.NewUploader().Upload(domainImage, auth.UserId)
 	if err != nil {
 		response.SendInternalServerError(ctx, "保存图片失败")
 		return

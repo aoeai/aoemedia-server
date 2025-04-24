@@ -33,7 +33,7 @@ func shouldReturnCorrectResultAfterImageUploaded(t *testing.T) {
 	userId := int64(1)
 
 	// 执行上传操作
-	result, err := Inst().Upload(domainImage, userId)
+	result, err := NewUploader().Upload(domainImage, userId)
 
 	// 验证结果
 	assert.NoError(t, err, "上传图片时发生错误")
@@ -48,7 +48,7 @@ func shouldSaveCorrectDataInFileTableAfterImageUploaded(t *testing.T) {
 	userId := int64(1)
 
 	// 执行上传操作
-	result, err := Inst().Upload(domainImage, userId)
+	result, err := NewUploader().Upload(domainImage, userId)
 
 	// 验证结果
 	assert.NoError(t, err, "上传图片时发生错误")
@@ -71,7 +71,7 @@ func shouldSaveCorrectDataInImageUploadRecordTableAfterImageUploaded(t *testing.
 	userId := int64(10)
 
 	// 执行上传操作
-	result, err := Inst().Upload(domainImage, userId)
+	result, err := NewUploader().Upload(domainImage, userId)
 
 	// 验证结果
 	assert.NoError(t, err, "上传图片时发生错误")
@@ -92,7 +92,7 @@ func shouldSaveCorrectDataInImageSearchTableAfterImageUploaded(t *testing.T) {
 	userId := int64(1)
 
 	// 执行上传操作
-	result, err := Inst().Upload(domainImage, userId)
+	result, err := NewUploader().Upload(domainImage, userId)
 
 	assertImageSearch(t, domainImage, userId, result, err)
 }

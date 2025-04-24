@@ -39,7 +39,7 @@ func (c *BaseController) readUploadedFile(ctx *gin.Context) ([]byte, string, err
 func (c *BaseController) sendSuccessResponse(ctx *gin.Context, id int64, filename string, size int64, hash string) {
 	response.SendSuccess(ctx, gin.H{
 		"message":  "文件上传成功",
-		"id":       converter.Int64ToString(id),
+		"id":       converter.Int64ToStr(id),
 		"filename": filename,
 		"size":     size,
 		"hash":     hash,

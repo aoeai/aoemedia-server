@@ -5,7 +5,7 @@ import (
 	repoimagesearch "github.com/aoemedia-server/adapter/driven/repository/image_search"
 	"github.com/aoemedia-server/domain/image"
 	domainimage "github.com/aoemedia-server/domain/image"
-	domainimagesearch "github.com/aoemedia-server/domain/image/search_service"
+	domainimagesearch "github.com/aoemedia-server/domain/image/image_search"
 	"github.com/sirupsen/logrus"
 	"sync"
 )
@@ -16,15 +16,15 @@ type App struct {
 }
 
 var (
-	instance *App
-	once     sync.Once
+	uploaderInstance *App
+	once             sync.Once
 )
 
-func Inst() *App {
+func NewUploader() *App {
 	once.Do(func() {
-		instance = &App{imageRepository: repoimage.Inst(), imageSearchRepository: repoimagesearch.Inst()}
+		uploaderInstance = &App{imageRepository: repoimage.Inst(), imageSearchRepository: repoimagesearch.Inst()}
 	})
-	return instance
+	return uploaderInstance
 }
 
 // Upload 上传图片

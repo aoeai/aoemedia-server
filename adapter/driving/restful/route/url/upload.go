@@ -1,4 +1,4 @@
-package upload
+package url
 
 // APIRoutes 定义API路由常量
 const (

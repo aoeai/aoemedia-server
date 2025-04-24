@@ -1,7 +1,7 @@
 package image_search
 
 import (
-	"github.com/aoemedia-server/domain/image/search_service"
+	"github.com/aoemedia-server/domain/image/image_search"
 	"testing"
 	"time"
 
@@ -14,14 +14,14 @@ func TestCreate(t *testing.T) {
 	testTime := time.Now()
 	tests := []struct {
 		name        string
-		imageSearch search_service.ImageSearch
+		imageSearch image_search.ImageSearch
 		wantErr     bool
 	}{
 		{
 			name: "正常场景-成功创建图片搜索记录",
-			imageSearch: search_service.ImageSearch{
+			imageSearch: image_search.ImageSearch{
 				UserId:       1,
-				FileId:       100,
+				FileId:       160,
 				Source:       1,
 				ModifiedTime: testTime,
 				FullPath:     "/path/to/image.jpg",
